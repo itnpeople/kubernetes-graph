@@ -1,0 +1,49 @@
+{
+  "name": "kore3lab-graph",
+  "version": "0.1.0",
+  "description": "kore3lab graph js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kore3lab/dashboard.git"
+  },
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "concurrently -r  \"npm run start:graph\"",
+    "start:graph": "webpack-dev-server --config webpack.js --mode=development ",
+    "start:backend": "nodemon --watch ./src/backend --delay 1 --exec ./node_modules/.bin/ts-node ./src/backend/server.ts",
+    "build:graph": "webpack --config webpack.js --mode=production",
+    "build:backend": "webpack --config webpack.backend.js --mode=production --stats-error-details"
+  },
+  "devDependencies": {
+    "@kubernetes/client-node": "^0.16.1",
+    "@types/cors": "^2.8.5",
+    "@types/d3": "^7.1.0",
+    "@types/d3-array": "^3.0.2",
+    "@types/d3-collection": "^1.0.10",
+    "@types/d3-hierarchy": "^3.0.2",
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.23",
+    "@types/request-promise": "^4.1.48",
+    "@webpack-cli/serve": "^1.6.0",
+    "concurrently": "^6.4.0",
+    "css-loader": "^6.5.1",
+    "d3": "^7.2.1",
+    "d3-array": "^3.1.1",
+    "express": "^4.17.3",
+    "html-webpack-plugin": "^5.5.0",
+    "nodemon": "^2.0.15",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.2.6",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.6.0",
+    "webpack-merge": "^5.8.0",
+    "yaml": "^1.10.2"
+  },
+  "engines": {
+    "node": ">=17.2.0",
+    "npm": ">=8.1.0"
+  }
+}

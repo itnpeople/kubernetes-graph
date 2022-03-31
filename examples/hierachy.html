@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+	<title>Hierachy</title>
+	<style>
+		.graph {width:100%; height:800px;}
+		.graph > svg {border:1px solid #ccc;}
+
+/*
+.node--internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}*/
+
+
+	</style>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/fontawesome.css">
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<main role="main" class="container-fluid" >
+	<h1>테스트</h1>
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="/">Home</a></li>
+			<li class="breadcrumb-item active">Hierachy (Tree)</li>
+		</ol>
+	</nav>
+	<!-- OPTION -->
+	<div class="col-sm"  id="divSearch">
+		<!-- BUTTON -->
+		<div class="row">
+			<div class="col-sm"></div>
+			<div class="col-sm-1">
+				<div class="btn-group " role="group">
+					<button type="button" id="btnQuery" class=" btn btn-sm btn-primary ">
+						<span class="spinner-border-sm" role="status" aria-hidden="true"></span>조회
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr>
+	<!-- 그래프 영역 -->
+	<div class="row">
+		<div class="col">
+			<div class="graph"></div>
+		</div>
+	</div>
+</main>
+</body>
+<script>
+	$.ajaxSetup({
+		Method: "GET",
+		contentType: "application/json; charset=utf-8",
+		dataType:"json",
+  		complete: () => { $("span.spinner-border").toggleClass("spinner-border"); }
+	});	
+</script>
+<script>
+
+	$(function() {
+		// 그래프 정의
+		var graph = new kore3lab.graph.HierachyGraph(".graph");
+
+		var btnQuery = $("#btnQuery");
+		$("#divSearch input").change(() => { btnQuery.click(); });
+		$("#divSearch select").change(() => { btnQuery.click(); });
+
+		// 조회 버튼 
+		btnQuery.click( (e) => {
+	 		graph.config({
+				global: {
+					align: {
+						horizonal: "center",
+						vertical: "middle"
+					}
+				}
+			})
+			.data([]).render();
+		});
+		btnQuery.click();
+
+	});
+
+</script>
+</html>
+
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+    
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.node text { font: 12px sans-serif; }
+
+.node--internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+
+</style>
+
+<body>
