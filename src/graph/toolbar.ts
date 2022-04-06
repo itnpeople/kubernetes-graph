@@ -1,5 +1,5 @@
 import * as d3		from "d3";
-import {UI}			from "@/components/graph/utils/lang";
+import {UI}			from "@/components/graph/utils/ui";
 import {GraphBase}	from "@/components/graph/graph.base";
 import "@/components/graph/toolbar.css";
 

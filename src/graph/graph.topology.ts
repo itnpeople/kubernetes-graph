@@ -3,7 +3,7 @@ import * as d3Force				from "d3-force";
 import * as d3Drag				from "d3-drag";
 import {GraphBase}				from "@/components/graph/graph.base";
 import {LegendModel, Toolbar}	from "@/components/graph/toolbar";
-import {ConfigModel}			from "@/components/graph/model/models";
+import {Config}					from "@/components/graph/model/config.model";
 import {Topology as model}		from "@/components/graph/model/graph.model"
 import "@/components/graph/graph.topology.css";
 
@@ -31,7 +31,7 @@ export class TopologyGraph extends GraphBase {
 	 * (abstract) 랜더링
 	 * @param data 토플로지를 위한 k8s 데이터 (model.K8s)
 	 */
-	public populate(conf:ConfigModel.Config, svgEl:d3Select.Selection<SVGSVGElement, any, SVGElement, any>, bounds:DOMRect, outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>) {
+	public populate(conf:Config, svgEl:d3Select.Selection<SVGSVGElement, any, SVGElement, any>, bounds:DOMRect, outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>) {
 
 		// svg > defs
 		if(svgEl.select("defs").size() == 0) svgEl.append("defs").call(TopologyGraph.renderDefs, conf);

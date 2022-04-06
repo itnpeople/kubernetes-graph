@@ -5,14 +5,18 @@
 	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
 	<title>Hierachy</title>
 	<style>
-		.graph {width:100%; height:800px;}
+		.graph {width:600px; height:800px;}
 		.graph > svg {border:1px solid #ccc;}
 
-/*
-.node--internal text {
-  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
-}*/
+g.box rect {
+	background-color: transparent;
+   stroke-width:1px;
+   stroke:red;
+   stroke-dasharray: 5 5;
+}
 
+.node text { font: 12px sans-serif; }
+.link { fill: none; stroke: #ccc; stroke-width: 1px;}
 
 	</style>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -30,7 +34,6 @@
 	</nav>
 	<!-- OPTION -->
 	<div class="col-sm"  id="divSearch">
-		<!-- BUTTON -->
 		<div class="row">
 			<div class="col-sm"></div>
 			<div class="col-sm-1">
@@ -79,7 +82,59 @@
 					}
 				}
 			})
-			.data([]).render();
+			.data({
+				"kube-system": [
+					{name: "calico-kube-controllers",kind: "Deployment"},
+					{name: "calico-kube-controllers-97769f7c7", kind: "ReplicaSet", ownerReferences:{name: "calico-kube-controllers",kind: "Deployment"} },
+					{name: "calico-kube-controllers-97769f7c7-q22tf", kind: "Pod", ownerReferences:{name: "calico-kube-controllers-97769f7c7", kind: "ReplicaSet"}, nodeName:"vm-live-v2-01"},
+					{name: "calico-node", kind: "DaemonSet"},
+					{name: "calico-node-8d45s", kind: "Pod", ownerReferences: {name: "calico-node", kind: "DaemonSet"}, nodeName:"vm-live-v2-01"},
+					{name: "calico-node-bfrsh", kind: "Pod", ownerReferences: {name: "calico-node", kind: "DaemonSet"}, nodeName:"vm-live-v2-02"},
+					{name: "calico-node-qhkmj", kind: "Pod", ownerReferences: {name: "calico-node", kind: "DaemonSet"}, nodeName:"vm-live-v2-03"},
+					{name:"dnsutils", kind:"DaemonSet"},
+					{name: "dnsutils-clnb6", kind: "Pod", ownerReferences: {name:"dnsutils", kind:"DaemonSet"}, nodeName: "vm-live-v2-03"},
+					{name: "dnsutils-ns5gs", kind: "Pod", ownerReferences: {name:"dnsutils", kind:"DaemonSet"}, nodeName: "vm-live-v2-02"},
+					{name: "coredns",kind: "Deployment"},
+					{name:"coredns-74ff55c5b", kind:"ReplicaSet", ownerReferences:{name: "coredns",kind: "Deployment"}},
+					{name:"coredns-74ff55c5b-lcxgq", kind: "Pod", ownerReferences: {name:"coredns-74ff55c5b", kind:"ReplicaSet"}},
+					{name:"coredns-74ff55c5b-lqqhc", kind: "Pod", ownerReferences: {name:"coredns-74ff55c5b", kind:"ReplicaSet"} },
+					{name:"vm-live-v2-01", kind:"Node"},
+					{name:"kube-apiserver-vm-live-v2-01", kind: "Pod", ownerReferences: {name:"vm-live-v2-01", kind:"Node"}},
+					{name:"kube-controller-manager-vm-live-v2-01", kind: "Pod", ownerReferences: {name:"vm-live-v2-01", kind:"Node"}},
+					{name:"kube-scheduler-vm-live-v2-01", kind: "Pod", ownerReferences: {name:"vm-live-v2-01", kind:"Node"}},
+					{name:"kube-proxy", kind:"DaemonSet"},
+					{name:"kube-proxy-cgjdx", kind: "Pod", ownerReferences: {name:"kube-proxy", kind:"DaemonSet"}},
+					{name:"kube-proxy-jpc6d", kind: "Pod", ownerReferences: {name:"kube-proxy", kind:"DaemonSet"}},
+					{name:"kube-proxy-w8hkw", kind: "Pod", ownerReferences: {name:"kube-proxy", kind:"DaemonSet"}},
+					{name:"metrics-server", kind:"Deployment"},
+					{name:"metrics-server-75fd6d4bdf", kind:"ReplicaSet", ownerReferences: {name:"metrics-server", kind:"Deployment"}},
+					{name:"metrics-server-75fd6d4bdf-nxl2s", kind: "Pod", ownerReferences: {name:"metrics-server-75fd6d4bdf", kind:"ReplicaSet"}},
+					{name:"nfs-pod-provisioner", kind:"Deployment"},
+					{name:"nfs-pod-provisioner-67d54467df", kind:"ReplicaSet", ownerReferences: {name:"nfs-pod-provisioner", kind:"Deployment"}},
+					{name:"nfs-pod-provisioner-67d54467df-55ml8", kind: "Pod", ownerReferences: {name:"nfs-pod-provisioner-67d54467df", kind:"ReplicaSet"}},
+				],
+				"kore":[
+					{name:"backend", kind:"Deployment"},
+					{name:"backend-7f79c5bcf4", kind:"ReplicaSet", ownerReferences: {name:"backend", kind:"Deployment"}},	//not exist pod rs
+					{name:"backend-79b9bd49fc", kind:"ReplicaSet", ownerReferences: {name:"backend", kind:"Deployment"}},
+					{name:"backend-79b9bd49fc-7ghfb", kind: "Pod", ownerReferences: {name:"backend-79b9bd49fc", kind:"ReplicaSet"}},
+					{name:"frontend", kind:"Deployment"},
+					{name:"frontend-6b55dbb97c", kind:"ReplicaSet", ownerReferences: {name:"frontend", kind:"Deployment"}},
+					{name:"frontend-6b55dbb97c-sjgp9", kind: "Pod", ownerReferences: {name:"frontend-6b55dbb97c", kind:"ReplicaSet"}},
+					{name:"metrics-scraper", kind:"Deployment"},
+					{name:"metrics-scraper-9f4f544f7", kind:"ReplicaSet", ownerReferences: {name:"metrics-scraper", kind:"Deployment"}},
+					{name:"metrics-scraper-9f4f544f7-q4w6d", kind: "Pod", ownerReferences: {name:"metrics-scraper-9f4f544f7", kind:"ReplicaSet"}},
+					{name:"terminal", kind:"Deployment"},
+					{name:"terminal-6975dd47c6", kind:"ReplicaSet", ownerReferences: {name:"terminal", kind:"Deployment"}},
+					{name: "terminal-6975dd47c6-jgrqm", kind: "Pod", ownerReferences: {name:"terminal-6975dd47c6", kind:"ReplicaSet"}},
+				],
+				"default":[
+					{name:"dnsutils", kind:"DaemonSet"},
+					{name: "dnsutils-clnb6", kind: "Pod", ownerReferences: {name:"dnsutils", kind:"DaemonSet"}, nodeName: "vm-live-v2-03"},
+					{name: "dnsutils-ns5gs", kind: "Pod", ownerReferences: {name:"dnsutils", kind:"DaemonSet"}, nodeName: "vm-live-v2-02"}
+				]
+			})
+			.render();
 		});
 		btnQuery.click();
 
@@ -88,29 +143,3 @@
 </script>
 </html>
 
-
-<!DOCTYPE html>
-<meta charset="utf-8">
-<style> /* set the CSS */
-    
-.node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 3px;
-}
-
-.node text { font: 12px sans-serif; }
-
-.node--internal text {
-  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
-}
-
-.link {
-  fill: none;
-  stroke: #ccc;
-  stroke-width: 2px;
-}
-
-</style>
-
-<body>

@@ -1,7 +1,7 @@
 import * as d3			from "d3";
 import * as d3Select	from "d3-selection";
 import {Tree as model}	from "@/components/graph/model/graph.model";
-import {ConfigModel}	from "@/components/graph/model/models";
+import {Config}			from "@/components/graph/model/config.model";
 import {Transform}		from "@/components/graph/utils/transform";
 import {GraphBase}		from "@/components/graph/graph.base";
 import "@/components/graph/graph.rbac.css"
@@ -16,7 +16,7 @@ export class RbacGraph extends GraphBase {
 	 * (abstract) 랜더링
 	 * @param data 토플로지를 위한 k8s 데이터 (model.K8s)
 	 */
-	public populate(conf:ConfigModel.Config, svgEl:d3Select.Selection<SVGSVGElement, any, SVGElement, any>, bounds:DOMRect, outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>) {
+	public populate(conf:Config, svgEl:d3Select.Selection<SVGSVGElement, any, SVGElement, any>, bounds:DOMRect, outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>) {
 		
 		if(!conf.data) return;
 

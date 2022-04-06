@@ -1,8 +1,9 @@
-import * as d3					from "d3";
-import * as d3Zoom				from "d3-zoom";
-import {ConfigModel, Bounds}	from "@/components/graph/model/models";
-import {Transform}				from "@/components/graph/utils/transform";
-import {UI,Lang}				from "@/components/graph/utils/lang";
+import * as d3		from "d3";
+import * as d3Zoom	from "d3-zoom";
+import {Config}		from "@/components/graph/model/config.model";
+import {Bounds}		from "@/components/graph/utils/ui";
+import {Transform}	from "@/components/graph/utils/transform";
+import {Lang}		from "@/components/graph/utils/lang";
 
 /**
  * Graph 베이스 클래스
@@ -15,16 +16,16 @@ export abstract class GraphBase {
 	private _svg:d3.Selection<SVGSVGElement, any, SVGElement, any>;
 	private _zoom:d3Zoom.ZoomBehavior<Element,any>;
 	private _container:HTMLElement;
-	private _config:ConfigModel.Config = new ConfigModel.Config();
+	private _config:Config = new Config();
 	private _beforeAlign:{vertical:string, horizonal:string} = {vertical:"",horizonal:"" };
 
-	constructor(el:HTMLElement, conf?:ConfigModel.Config) {
+	constructor(el:HTMLElement, conf?:Config) {
 		this._container = el;
 		Object.assign(this._config, conf);
 	}
 
-	public config(_?:ConfigModel.Config):GraphBase|ConfigModel.Config {
-		return arguments.length ? (this._config = Lang.merge(new ConfigModel.Config(), _), this) : this._config;
+	public config(_?:Config):GraphBase|Config {
+		return arguments.length ? (this._config = Lang.merge(new Config(), _), this) : this._config;
 	}
 	public data(_?:any):GraphBase|any {
 		return arguments.length ? (this._config.data = _, this) : this._config.data;
@@ -112,13 +113,13 @@ export abstract class GraphBase {
 		if(attrTransform) outlineEl.attr("transform",attrTransform);
 		else {
 
-			// outline 수직 정렬
-			if(this._config.global.align.vertical=="middle") UI.alignVertical(outlineEl.node()!);
-			else if(this._config.global.align.vertical=="none") Transform.instance(outlineEl.node()!).shiftY(this._config.global.padding.top);	//중간 정렬이 아닐 경우 TOP padding 적용
+			//// outline 수직 정렬
+			//if(this._config.global.align.vertical=="middle") UI.alignVertical(outlineEl.node()!);
+			//else if(this._config.global.align.vertical=="none") Transform.instance(outlineEl.node()!).shiftY(this._config.global.padding.top);	//중간 정렬이 아닐 경우 TOP padding 적용
 
-			// outline 수평 정렬
-			if(this._config.global.align.horizonal=="center") UI.alignHorizonal(outlineEl.node()!);
-			else if(this._config.global.align.horizonal=="none") Transform.instance(outlineEl.node()!).shiftX(this._config.global.padding.left);	//가운데 정렬이 아닐 경우 LEFT padding 적용
+			//// outline 수평 정렬
+			//if(this._config.global.align.horizonal=="center") UI.alignHorizonal(outlineEl.node()!);
+			//else if(this._config.global.align.horizonal=="none") Transform.instance(outlineEl.node()!).shiftX(this._config.global.padding.left);	//가운데 정렬이 아닐 경우 LEFT padding 적용
 		}
 
 		// ZOOM
@@ -227,6 +228,6 @@ export abstract class GraphBase {
 
 	}
 	
-	protected abstract populate(conf:ConfigModel.Config, svg:d3.Selection<SVGSVGElement, any, SVGElement, any>, bounds:Bounds, outlineEl:d3.Selection<SVGGElement,any,SVGElement,any>):void;
+	protected abstract populate(conf:Config, svg:d3.Selection<SVGSVGElement, any, SVGElement, any>, bounds:Bounds, outlineEl:d3.Selection<SVGGElement,any,SVGElement,any>):void;
 
 }
