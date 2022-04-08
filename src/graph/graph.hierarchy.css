@@ -1,0 +1,3 @@
+g.graph g.group > text { font: 1.2em sans-serif; }
+g.graph g.tree .node text { font: 1em sans-serif; }
+g.graph g.tree  path.link { fill: none; stroke: #ccc; stroke-width: 1px;}

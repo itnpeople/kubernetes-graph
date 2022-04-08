@@ -1,0 +1,52 @@
+{
+  "kube-system": [
+		{"name": "calico-kube-controllers","kind": "Deployment"},
+		{"name": "calico-kube-controllers-97769f7c7", "kind": "ReplicaSet", "ownerReferences":{"name": "calico-kube-controllers","kind": "Deployment"} },
+		{"name": "calico-kube-controllers-97769f7c7-q22tf", "kind": "Pod", "depth":2, "ownerReferences":{"name": "calico-kube-controllers-97769f7c7", "kind": "ReplicaSet"}, "nodeName":"vm-live-v2-01"},
+		{"name": "calico-node", "kind": "DaemonSet"},
+		{"name": "calico-node-8d45s", "kind": "Pod", "depth":2, "ownerReferences": {"name": "calico-node", "kind": "DaemonSet"}, "nodeName":"vm-live-v2-01"},
+		{"name": "calico-node-bfrsh", "kind": "Pod", "depth":2, "ownerReferences": {"name": "calico-node", "kind": "DaemonSet"}, "nodeName":"vm-live-v2-02"},
+		{"name": "calico-node-qhkmj", "kind": "Pod", "depth":2, "ownerReferences": {"name": "calico-node", "kind": "DaemonSet"}, "nodeName":"vm-live-v2-03"},
+		{"name":"dnsutils", "kind":"DaemonSet"},
+		{"name": "dnsutils-clnb6", "kind": "Pod", "depth":2, "ownerReferences": {"name":"dnsutils", "kind":"DaemonSet"}, "nodeName": "vm-live-v2-03"},
+		{"name": "dnsutils-ns5gs", "kind": "Pod", "depth":2, "ownerReferences": {"name":"dnsutils", "kind":"DaemonSet"}, "nodeName": "vm-live-v2-02"},
+		{"name": "coredns","kind": "Deployment"},
+		{"name":"coredns-74ff55c5b", "kind":"ReplicaSet", "ownerReferences":{"name": "coredns","kind": "Deployment"}},
+		{"name":"coredns-74ff55c5b-lcxgq", "kind": "Pod", "depth":2, "ownerReferences": {"name":"coredns-74ff55c5b", "kind":"ReplicaSet"}},
+		{"name":"coredns-74ff55c5b-lqqhc", "kind": "Pod", "depth":2, "ownerReferences": {"name":"coredns-74ff55c5b", "kind":"ReplicaSet"} },
+		{"name":"vm-live-v2-01", "kind":"Node"},
+		{"name":"kube-apiserver-vm-live-v2-01", "kind": "Pod", "depth":2, "ownerReferences": {"name":"vm-live-v2-01", "kind":"Node"}},
+		{"name":"kube-controller-manager-vm-live-v2-01", "kind": "Pod", "depth":2, "ownerReferences": {"name":"vm-live-v2-01", "kind":"Node"}},
+		{"name":"kube-scheduler-vm-live-v2-01", "kind": "Pod", "depth":2, "ownerReferences": {"name":"vm-live-v2-01", "kind":"Node"}},
+		{"name":"kube-proxy", "kind":"DaemonSet"},
+		{"name":"kube-proxy-cgjdx", "kind": "Pod", "depth":2, "ownerReferences": {"name":"kube-proxy", "kind":"DaemonSet"}},
+		{"name":"kube-proxy-jpc6d", "kind": "Pod", "depth":2, "ownerReferences": {"name":"kube-proxy", "kind":"DaemonSet"}},
+		{"name":"kube-proxy-w8hkw", "kind": "Pod", "depth":2, "ownerReferences": {"name":"kube-proxy", "kind":"DaemonSet"}},
+		{"name":"metrics-server", "kind":"Deployment"},
+		{"name":"metrics-server-75fd6d4bdf", "kind":"ReplicaSet", "ownerReferences": {"name":"metrics-server", "kind":"Deployment"}},
+		{"name":"metrics-server-75fd6d4bdf-nxl2s", "kind": "Pod", "depth":2, "ownerReferences": {"name":"metrics-server-75fd6d4bdf", "kind":"ReplicaSet"}},
+		{"name":"nfs-pod-provisioner", "kind":"Deployment"},
+		{"name":"nfs-pod-provisioner-67d54467df", "kind":"ReplicaSet", "ownerReferences": {"name":"nfs-pod-provisioner", "kind":"Deployment"}},
+		{"name":"nfs-pod-provisioner-67d54467df-55ml8", "kind": "Pod", "depth":2, "ownerReferences": {"name":"nfs-pod-provisioner-67d54467df", "kind":"ReplicaSet"}}
+	],
+	"kore":[
+		{"name":"backend", "kind":"Deployment"},
+		{"name":"backend-7f79c5bcf4", "kind":"ReplicaSet", "ownerReferences": {"name":"backend", "kind":"Deployment"}},
+		{"name":"backend-79b9bd49fc", "kind":"ReplicaSet", "ownerReferences": {"name":"backend", "kind":"Deployment"}},
+		{"name":"backend-79b9bd49fc-7ghfb", "kind": "Pod", "depth":2, "ownerReferences": {"name":"backend-79b9bd49fc", "kind":"ReplicaSet"}},
+		{"name":"frontend", "kind":"Deployment"},
+		{"name":"frontend-6b55dbb97c", "kind":"ReplicaSet", "ownerReferences": {"name":"frontend", "kind":"Deployment"}},
+		{"name":"frontend-6b55dbb97c-sjgp9", "kind": "Pod", "depth":2, "ownerReferences": {"name":"frontend-6b55dbb97c", "kind":"ReplicaSet"}},
+		{"name":"metrics-scraper", "kind":"Deployment"},
+		{"name":"metrics-scraper-9f4f544f7", "kind":"ReplicaSet", "ownerReferences": {"name":"metrics-scraper", "kind":"Deployment"}},
+		{"name":"metrics-scraper-9f4f544f7-q4w6d", "kind": "Pod", "depth":2, "ownerReferences": {"name":"metrics-scraper-9f4f544f7", "kind":"ReplicaSet"}},
+		{"name":"terminal", "kind":"Deployment"},
+		{"name":"terminal-6975dd47c6", "kind":"ReplicaSet", "ownerReferences": {"name":"terminal", "kind":"Deployment"}},
+		{"name": "terminal-6975dd47c6-jgrqm", "kind": "Pod", "depth":2, "ownerReferences": {"name":"terminal-6975dd47c6", "kind":"ReplicaSet"}}
+	],
+	"default":[
+		{"name":"dnsutils", "kind":"DaemonSet"},
+		{"name": "dnsutils-clnb6", "kind": "Pod", "depth":2, "ownerReferences": {"name":"dnsutils", "kind":"DaemonSet"}, "nodeName": "vm-live-v2-03"},
+		{"name": "dnsutils-ns5gs", "kind": "Pod", "depth":2, "ownerReferences": {"name":"dnsutils", "kind":"DaemonSet"}, "nodeName": "vm-live-v2-02"}
+	]
+}

@@ -1,7 +1,21 @@
 import * as d3Force		from "d3-force";
+import * as d3Hierarchy		from "d3-hierarchy";
 
 /** 
- * Topology 데이터 모델
+*/
+export namespace HierarchyModel {
+
+	export class Node {
+		name:string
+		kind:string
+		depth:number
+		ownerReferences:Node 
+		children:Array<Node>
+	}
+
+}
+
+/** 
 */
 export namespace Tree {
 
@@ -20,7 +34,7 @@ export namespace Tree {
 /** 
  * Topology 데이터 모델
 */
-export namespace Topology {
+export namespace TopologyModel {
 
 	export class Topology {
 		public nodes:Node[] = [];
@@ -56,7 +70,7 @@ export namespace Topology {
 	}
 
 	export enum NodeKind {
-		SERVICE = "service", POD = "pod", NAMESPACE = "namespace", NODE = "node", CLUSTER = "cluster",
+		SERVICE = "service", POD = "pod", NAMESPACE = "namespace", NODE = "node", CLUSTER = "cluster", CONTAINER = "container",
 		USER = "user", GROUP = "group", ROLE = "role", CLUSTER_ROLE = "clusterrole", SERVICE_ACCOUNT = "serviceaccount", ROLEBINDING = "rolebinding", CLUSTER_ROLEBINDING = "clusterrolebinding", SECRET ="secret"
 	}
 }

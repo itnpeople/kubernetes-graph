@@ -3,10 +3,9 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
-	<title>Rbac</title>
+	<title>Hierarchy</title>
 	<style>
-		.graph {width:100%; height:800px;}
-		.graph > svg {border:1px solid #ccc;}
+		div.graph {width:620px; height:800px;padding:10px; border:1px solid #ccc;}
 	</style>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/fontawesome.css">
@@ -14,19 +13,24 @@
 </head>
 <body>
 <main role="main" class="container-fluid" >
-	<h1>Rbac</h1>
+	<h1>테스트</h1>
 	<nav aria-label="breadcrumb">
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item"><a href="/">Home</a></li>
-			<li class="breadcrumb-item active">Rbac Graph</li>
+			<li class="breadcrumb-item active">Hierarchy (Tree)</li>
 		</ol>
 	</nav>
-	<hr>
 	<!-- OPTION -->
 	<div class="col-sm"  id="divSearch">
-		<!-- BUTTON -->
 		<div class="row">
-			<div class="col-sm"></div>
+			<div class="col-sm">
+				<div class="row">
+					<div class="col-sm-1">Cluster</div>
+					<div class="col-sm">
+						<input type="text" class="form-control form-control-sm" id="txtCluster">
+					</div>
+				</div>
+			</div>
 			<div class="col-sm-1">
 				<div class="btn-group " role="group">
 					<button type="button" id="btnQuery" class=" btn btn-sm btn-primary ">
@@ -56,9 +60,8 @@
 <script>
 
 	$(function() {
-
 		// 그래프 정의
-		var graph = new kore3lab.graph.RbacGraph(".graph");
+		var graph = new kore3lab.graph.HierarchyGraph(".graph");
 
 		var btnQuery = $("#btnQuery");
 		$("#divSearch input").change(() => { btnQuery.click(); });
@@ -67,18 +70,21 @@
 		// 조회 버튼 
 		btnQuery.click( (e) => {
 
-			var param = {
-				kind: "User",
-				name: "acloud-client"
-			}
-			 $.ajax({
-			 	url: "/api/clusters/apps-05/rbac",
-			 	data: JSON.stringify(param),
-			 	success: function(data) {
-			 		graph.data(data).render();
-			 	}
-			 });
+			var cluster = $("#txtCluster").val()
+			var url = cluster? `/api/clusters/${cluster}/hierarchy`: "/data/clusters/apps-05/hierarchy"
+			$.ajax({
+				url: url,
+				success: function(data) {
+					graph
+						.config({})
+						.data(data).render();
 
+				},
+				error:function(request,status, error){
+					alert(`<${request.status}>\n${error}`);
+				}
+
+			});
 
 		});
 		btnQuery.click();
@@ -87,3 +93,4 @@
 
 </script>
 </html>
+

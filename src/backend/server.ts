@@ -1,6 +1,5 @@
-import express	from 'express'
+import express	from "express"
 import cors		from "cors";
-import "./router/router.api.v1"
 
 /**
  * 제공 서비스
@@ -10,7 +9,7 @@ import "./router/router.api.v1"
  */
 const app = express(),
 	PORT = process.env.PORT || 4000
-const router = express.Router();
+//const router = express.Router();
 
 
 // Restful API
@@ -20,7 +19,7 @@ app.use(express.json());
 
 //// 인덱스 페이지
 app.get("/", (req:any, res:any) => res.send("Hello World!"));
-app.use("/api",		router);	//RestfulAPI
+app.use("/api",		require("./router.api.v1"));	//RestfulAPI
 
 app.listen(PORT, () => {
 	console.log(`PORT = ${PORT}`)

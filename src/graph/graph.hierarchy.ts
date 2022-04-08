@@ -1,48 +1,33 @@
 "uss strict"
-import * as d3			from "d3";
-import * as d3Select	from "d3-selection";
-import {Config}			from "@/components/graph/model/config.model";
-import {UI}				from "@/components/graph/utils/ui";
-import {GraphBase}		from "@/components/graph/graph.base";
+import * as d3					from "d3";
+import * as d3Select			from "d3-selection";
+import {HierarchyModel as model}	from "@/components/graph/model/graph.model";
+import {Config}					from "@/components/graph/model/config.model";
+import {UI}						from "@/components/graph/utils/ui";
+import {GraphBase}				from "@/components/graph/graph.base";
+import "@/components/graph/graph.hierarchy.css";
 
 /**
  * Topology 그래프 랜더러
  */
-export class HierachyGraph extends GraphBase {
-
-		//conf.data = {
-		//	"kube-system": [
-		//		{name: "calico-kube-controllers",kind: "Deployment"},
-		//		{name: "calico-kube-controllers-97769f7c7", kind: "ReplicaSet", ownerReferences:{name: "calico-kube-controllers",kind: "Deployment"} },
-		//		{name: "calico-kube-controllers-97769f7c7-q22tf", kind: "Pod", ownerReferences:{name: "calico-kube-controllers-97769f7c7", kind: "ReplicaSet"}, nodeName:"vm-live-v2-01"},
-		//		{name: "calico-node", kind: "DaemonSet"},
-		//		{name: "calico-node-8d45s", kind: "Pod", ownerReferences: {name: "calico-node", kind: "DaemonSet"}, nodeName:"vm-live-v2-01"},
-		//		{name: "calico-node-bfrsh", kind: "Pod", ownerReferences: {name: "calico-node", kind: "DaemonSet"}, nodeName:"vm-live-v2-02"},
-		//		{name: "calico-node-qhkmj", kind: "Pod", ownerReferences: {name: "calico-node", kind: "DaemonSet"}, nodeName:"vm-live-v2-03"},
-		//	],
-		//	"default":[
-		//		{name:"dnsutils", kind:"DaemonSet"},
-		//		{name: "dnsutils-clnb6", kind: "Pod", ownerReferences: {name:"dnsutils", kind:"DaemonSet"}, nodeName: "vm-live-v2-03"},
-		//		{name: "dnsutils-ns5gs", kind: "Pod", ownerReferences: {name:"dnsutils", kind:"DaemonSet"}, nodeName: "vm-live-v2-02"}
-		//	]
-		//}
-
+export class HierarchyGraph extends GraphBase {
 	/**
 	 * (abstract) 랜더링
 	 * 
-	 * @param data 데이터
-	 * @param bounds 랜더링 기준 크기 (x,y,height,width)
 	 * @param outlineEl 외곽 g element (zoom & drag 용)
+	 * @param bounds 랜더링 영역 크기 (x,y,height,width)
+	 * @param conf 데이터 & 옵션
 	 */
-	public populate(conf:Config, svgEl:d3Select.Selection<SVGSVGElement, any, SVGElement, any>, bounds:DOMRect, outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>) {
+	public populate(outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>, bounds:DOMRect, conf:Config) {
 		
 		if(!conf.data) return;
 
 		// svg > defs
-		if(svgEl.select("defs").size() == 0) svgEl.append("defs").call(HierachyGraph.renderDefs, conf);
+		const svgEl:d3Select.Selection<SVGSVGElement, any, SVGElement, any> = this.svg()
+		if(svgEl.select("defs").size() == 0) svgEl.append("defs").call(HierarchyGraph.renderDefs, conf);
 
 		// data 가공
-		let data:any = [];
+		let data:Array<model.Node> = [];
 		Object.keys(conf.data).forEach( (k:string)=> {
 			let d = conf.data[k]
 			if (Array.isArray(d)) {
@@ -73,49 +58,36 @@ export class HierachyGraph extends GraphBase {
 		// svg > g.graph > g.outline > g.outlineWrap > g.group
 		//		> text
 		//      > g.boxWrap > g.box > g.tree
-		const config = {
-			margin: {
-				outline: 10,		//outline
-				group : 25,		//group 간 마진
-				tree : 15,		//group 내부 multi-root 트리간 마진
-			}
-		}
-
-		//bounds.width -= config.margin.outline*2;
-		const outlineWrap = outlineEl.append("g")
-			.attr("class","outlineWrap")
-			.attr("transform", `translate(${config.margin.outline},${config.margin.outline})`)	// 좌우는 tree-layout 에서 자동 sizing
-
-		bounds.width -= (config.margin.outline *2 + 2) //line width
 
 		// rendering groups
 		let gH = 0;
-		const padding = {top:10, left:5, right:5, bottom:10};
-		const treeWidth = bounds.width - (padding.left + padding.right);
-		const titlePaddingBottom:number = 10
+		const padding = conf.extends.hierarchy.group.box.padding;
+		const width:number = bounds.width - 2 //line width
+		const treeWidth:number = width - (padding.left + padding.right);
+		const nodeHeight:number = conf.extends.hierarchy.group.box.tree.node.height;
 
-		data.forEach((d:any)=> {
+		data.forEach((d:model.Node)=> {
 
-			const g = outlineWrap.append("g").attr("class","group");
+			const g = outlineEl.append("g").attr("class","group");
 			const t = g.append("text").text(d.name).attr("transform", (d:any,i:number,els:SVGTextElement[]|d3.ArrayLike<SVGTextElement>)=> {
 				return `translate(0,${els[i].getBBox().y * -1})`
 			})
 
-			let h = t.node()!.getBBox().height + titlePaddingBottom;
+			let h = t.node()!.getBBox().height + conf.extends.hierarchy.group.title.spacing;
 			UI.appendBox(g, (box: d3.Selection<SVGGElement, any, SVGElement, any>)=> {
-				d.children.forEach((c:any)=> {
+				d.children.forEach((c:model.Node)=> {
 					let gg = box.append("g").attr("class","tree")
-						.call(HierachyGraph.renderHierarchy, c, treeWidth)
+						.call(HierarchyGraph.renderHierarchy, c, treeWidth, nodeHeight)
 						.attr("transform", (d:any,i:number,els: Array<SVGGElement>|d3.ArrayLike<SVGGElement>)=> {
 							return `translate(0,${h-els[i].getBBox().y})`
 						});
-					h += gg.node()!.getBBox().height + config.margin.tree;	// multi-root 간 간격
+					h += gg.node()!.getBBox().height + conf.extends.hierarchy.group.box.tree.spacing;	// multi-root 간 간격
 				});
-			}, bounds.width, padding, {width:1, dash:"2 2"});
+			}, width, padding, {width:1, dash:"2 2"});
 
 			// + move Y
 			g.attr("transform", `translate(0,${gH})`)
-			gH += g.node()!.getBBox().height + config.margin.group;
+			gH += g.node()!.getBBox().height + conf.extends.hierarchy.group.spacing;
 		});
 
 	}
@@ -127,48 +99,54 @@ export class HierachyGraph extends GraphBase {
 	 * @param data  랜더링 데이터
 	 * @param treeWidth 너비 - 각 노드 너비 계산
 	*/
-	private static renderHierarchy(parentEl:d3Select.Selection<SVGGElement,any,SVGElement,any>, data:any, treeWidth:number) {
+	private static renderHierarchy(parentEl:d3Select.Selection<SVGGElement,any,SVGElement,any>, data:model.Node, treeWidth:number, nodeHeight:number) {
 
 		const nodeWidth = treeWidth/ 3
-		const nodeHeight = 30
 		const layoaut = d3.tree().nodeSize([nodeHeight, nodeWidth]);
 
-		let nodes = d3.hierarchy(data, (d:any) => d.children);	//  assigns the data to a hierarchy using parent-child relationships
-		nodes = layoaut(nodes) // maps the node data to the tree layout
-		nodes.each( (nd:any)=> {
-			if(nd.data.kind == "Pod") {
-				nd.y =  nodeWidth * 2
+		let d:d3.HierarchyNode<model.Node> = d3.hierarchy(data, (d:any) => d.children);	//  assigns the data to a hierarchy using parent-child relationships
+		let nodes:d3.HierarchyPointNode<model.Node> = <d3.HierarchyPointNode<model.Node>>layoaut(d) // maps the node data to the tree layout
+
+		nodes.each( (nd:d3.HierarchyPointNode<model.Node>)=> {
+			if(nd.data.depth > -1) {
+				nd.y =  nodeWidth * nd.data.depth
 			} else {
 				nd.y =  nodeWidth * nd.depth;
 			}
 		})
+
+		const icoWH:number = nodeHeight - 2	//30-6,	40-2
 
 		// adds the links between the nodes
 		parentEl.selectAll(".link")
 			.data( nodes.descendants().slice(1))
 		.enter().append("path")
 			.attr("class", "link")
-			.attr("d", (d:any) => `M${d.y},${d.x}C${(d.y + d.parent.y) / 2},${d.x} ${(d.y + d.parent.y) / 2},${d.parent.x} ${d.parent.y},${d.parent.x}`);
+			.attr("d", (d:d3.HierarchyPointNode<model.Node>) => `M${d.y},${d.x}C${(d.y + d.parent!.y) / 2},${d.x} ${(d.y + d.parent!.y) / 2},${d.parent!.x} ${d.parent!.y},${d.parent!.x}`);
 
 		// adds each node as a group
 		let node = parentEl.selectAll(".node")
 			.data(nodes.descendants())
 		.enter().append("g")
 			.attr("class", "node")
-			.attr("transform", (d:any) => `translate(${d.y},${d.x-12})`);
+			.attr("transform", (d:d3.HierarchyPointNode<model.Node>) => `translate(${d.y},${d.x-12})`);
 
 		// adds the icon to the node
 		node.append("use")
-			.attr("class","ico").attr("height","24").attr("width","24")
-			.attr("xlink:href", (d:any)=>`#ac_ic_${(d.data.kind || "").toLowerCase()}`)
+			.attr("class","ico")
+			.attr("y","-6")
+			.attr("height",icoWH).attr("width",icoWH)
+			.attr("xlink:href", (d:d3.HierarchyPointNode<model.Node>)=>`#ac_ic_${(d.data.kind || "").toLowerCase()}`)
+		
+
 
 		const nd = node.append("text")
-			.attr("dy", (d) => d.children ? ".5em" : "1.3em")
-			.attr("x", "2.2em")
-			.text((d) =>d.data.name);
+			.attr("dy", (d) => d.children ? icoWH/4 : icoWH/2)
+			.attr("x", icoWH+2.5)
+			.text((d:d3.HierarchyPointNode<model.Node>) =>d.data.name);
 
 
-		nd.each( (d:any,i:number,els:SVGTextElement[]|d3.ArrayLike<SVGTextElement>) =>{
+		nd.each( (d:d3.HierarchyPointNode<model.Node>,i:number,els:SVGTextElement[]|d3.ArrayLike<SVGTextElement>) =>{
 			UI.ellipsisText(els[i], nodeWidth)
 		});
 

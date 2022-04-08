@@ -76,6 +76,13 @@ export abstract class GraphBase {
 		let graphEl:d3.Selection<SVGGElement,any,SVGElement,any> = svg.select("g.graph");
 		let outlineEl:d3.Selection<SVGGElement,any,SVGElement,any>;
 		let attrTransform:string = "";
+		const conf:Config = <Config>this.config();
+
+		// size 재 계산
+		if (conf.global.padding.left + conf.global.padding.right != 0) {
+			bounds.width -= (conf.global.padding.left + conf.global.padding.right);
+			bounds.height -= (conf.global.padding.top + conf.global.padding.bottom);
+		}
 
 		if(graphEl.size() > 0) {
 			// 이전에 outline 이 있다면  
@@ -96,8 +103,12 @@ export abstract class GraphBase {
 			graphEl.append("rect").attr("class","background").attr("width",bounds.width).attr("height",bounds.height).attr("fill","transparent")
 		}
 
+		// padding
 		outlineEl = graphEl.append("g").attr("class","outline");
-
+		if (conf.global.padding.top  != 0) svg.style("padding-top", conf.global.padding.top);
+		if (conf.global.padding.bottom  != 0) svg.style("padding-bottom", conf.global.padding.bottom);
+		if (conf.global.padding.left  != 0) svg.style("padding-left", conf.global.padding.left);
+		if (conf.global.padding.right  != 0) svg.style("padding-right", conf.global.padding.right);
 
 		// 멤버변수들
 		this.bounds(bounds);
@@ -107,7 +118,7 @@ export abstract class GraphBase {
 		this.graphEl(graphEl);
 
 		// 데이터 모델 구성 후 그려주기
-		this.populate(this._config, svg, bounds, outlineEl);
+		this.populate(outlineEl, bounds, conf);
 
 		// 이전에 outline 이 있다면  이전 속성값 다시 지정하고 수직, 수평정렬은 수행하지 않는다.
 		if(attrTransform) outlineEl.attr("transform",attrTransform);
@@ -228,6 +239,6 @@ export abstract class GraphBase {
 
 	}
 	
-	protected abstract populate(conf:Config, svg:d3.Selection<SVGSVGElement, any, SVGElement, any>, bounds:Bounds, outlineEl:d3.Selection<SVGGElement,any,SVGElement,any>):void;
+	protected abstract populate(outlineEl:d3.Selection<SVGGElement,any,SVGElement,any>, bounds:Bounds, conf:Config):void;
 
 }

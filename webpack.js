@@ -10,8 +10,7 @@ module.exports = [
 {
 	entry: {
 		topology: path.join(__dirname, "/src/graph/graph.topology.ts"),
-		rbac: path.join(__dirname, "/src/graph/graph.rbac.ts"),
-		hierachy: path.join(__dirname, "/src/graph/graph.hierachy.ts"),
+		hierarchy: path.join(__dirname, "/src/graph/graph.hierarchy.ts"),
 	},
 	resolve: {
 		extensions: [".ts", ".js", ".scss"],
@@ -23,7 +22,7 @@ module.exports = [
 		path: path.resolve(__dirname, "dist"),
 		library: ["kore3lab", "graph"],
 		libraryTarget: "umd",
-		filename: "kore3lab.graph.[name].js",
+		filename: "kubernetes-graph.[name].js",
 		globalObject: "this",
 	},
 	module: {
@@ -40,14 +39,9 @@ module.exports = [
 			filename: "topology.html",
 		}),
 		new HtmlWebpackPlugin({
-			chunks: ["rbac"],
-			template: "./examples/rbac.html",
-			filename: "rbac.html",
-		}),
-		new HtmlWebpackPlugin({
-			chunks: ["hierachy"],
-			template: "./examples/hierachy.html",
-			filename: "hierachy.html",
+			chunks: ["hierarchy"],
+			template: "./examples/hierarchy.html",
+			filename: "hierarchy.html",
 		}),
 	],
 	devtool: "source-map",
@@ -56,7 +50,7 @@ module.exports = [
 			directory: path.join(__dirname, "examples"),
 		},
 		proxy: {
-			"/api/clusters/apps-06/rbac" : "http://localhost:4000"
+			"/api/clusters" : "http://localhost:4000"
 		},
 		historyApiFallback: true,
 		compress: true,

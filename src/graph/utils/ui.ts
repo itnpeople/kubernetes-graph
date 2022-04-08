@@ -15,7 +15,7 @@ export class Bounds {
 		let bounds:DOMRect
 		
 		if( selection.node() instanceof SVGGElement ) {
-			bounds = selection.node()!.getBBox()
+			bounds = (<SVGGElement>selection.node()!).getBBox()
 			this.x = bounds.x;
 			this.y = bounds.y;
 			this.width = bounds.width;
@@ -31,7 +31,6 @@ export class Bounds {
 			this.bottom = bounds.bottom - Lang.toNumber(selection.style("padding-bottom"),0);
 			this.width = this.right-this.x;
 			this.height = this.bottom - this.y;
-
 		}
 
 	}
@@ -188,13 +187,13 @@ export class UI {
 		const bottom:number = bounds.y + bounds.height + (padding?padding.top+padding.bottom:0);
 		const right:number = bounds.x + (width?width:bounds.width); //stroke-width 반영
 
-		boxWrap.append("path")
+		const background = boxWrap.append("path")
 			.attr("class","background")
 			.attr("d",`M${bounds.x},${bounds.y} L${right},${bounds.y} L${right},${bottom} L${bounds.x},${bottom} L${bounds.x},${bounds.y}`)
 			//.attr("fill-opacity",".1")
 			.attr("fill","none")
 
-		if(border) boxWrap.attr("stroke","black").attr("stroke-width",border.width).attr("stroke-dasharray", border.dash)
+		if(border) background.attr("stroke","black").attr("stroke-width",border.width).attr("stroke-dasharray", border.dash)
 			
 
 		if(padding) Transform.instance(box.node()!).shift(padding.left,padding.top)

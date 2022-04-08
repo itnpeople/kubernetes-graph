@@ -1,16 +1,16 @@
 {
-  "name": "kore3lab-graph",
+  "name": "kubernetes-graph",
   "version": "0.1.0",
-  "description": "kore3lab graph js",
+  "description": "kubernetes graph js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kore3lab/dashboard.git"
+    "url": "https://github.com/itnpeople/kubernetes-graph.git"
   },
   "license": "UNLICENSED",
   "scripts": {
-    "start": "concurrently -r  \"npm run start:graph\"",
+    "start": "concurrently -r  \"npm run start:graph\" \"npm run start:backend\"",
     "start:graph": "webpack-dev-server --config webpack.js --mode=development ",
-    "start:backend": "nodemon --watch ./src/backend --delay 1 --exec ./node_modules/.bin/ts-node ./src/backend/server.ts",
+    "start:backend": "nodemon --watch src/backend --delay 1 --exec ts-node src/backend/server.ts",
     "build:graph": "webpack --config webpack.js --mode=production",
     "build:backend": "webpack --config webpack.backend.js --mode=production --stats-error-details"
   },
@@ -29,7 +29,8 @@
     "css-loader": "^6.5.1",
     "d3": "^7.2.1",
     "d3-array": "^3.1.1",
-    "express": "^4.17.3",
+    "cors":"^2.8.5",
+    "request-promise":"^4.2.6",
     "html-webpack-plugin": "^5.5.0",
     "nodemon": "^2.0.15",
     "style-loader": "^3.3.1",

@@ -4,7 +4,7 @@ import * as d3Drag				from "d3-drag";
 import {GraphBase}				from "@/components/graph/graph.base";
 import {LegendModel, Toolbar}	from "@/components/graph/toolbar";
 import {Config}					from "@/components/graph/model/config.model";
-import {Topology as model}		from "@/components/graph/model/graph.model"
+import {TopologyModel as model}	from "@/components/graph/model/graph.model"
 import "@/components/graph/graph.topology.css";
 
 /**
@@ -31,9 +31,10 @@ export class TopologyGraph extends GraphBase {
 	 * (abstract) 랜더링
 	 * @param data 토플로지를 위한 k8s 데이터 (model.K8s)
 	 */
-	public populate(conf:Config, svgEl:d3Select.Selection<SVGSVGElement, any, SVGElement, any>, bounds:DOMRect, outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>) {
+	public populate(outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>, bounds:DOMRect, conf:Config) {
 
 		// svg > defs
+		const svgEl:d3Select.Selection<SVGSVGElement, any, SVGElement, any> = this.svg()
 		if(svgEl.select("defs").size() == 0) svgEl.append("defs").call(TopologyGraph.renderDefs, conf);
 
 
@@ -71,10 +72,10 @@ export class TopologyGraph extends GraphBase {
 			.force("charge", d3Force.forceManyBody().strength(-600))
 			.force("theta", d3Force.forceManyBody().theta(0.01))
 			.force("link", forceLink)
-			.force('collision',  d3Force.forceCollide().radius(conf.topology.collision.radius))
+			.force('collision',  d3Force.forceCollide().radius(conf.extends.topology.collision.radius))
 			// .force('collide',  d3Force.forceCollide( (d:any) => { return d.kind=="cluster" ? 0 : 60}))
 			.alpha(1)
-			.alphaDecay(conf.topology.simulation.alphaDecay)	// ~0.0228 시뮬레이션 decay - 클수록 빠르지만 배치가 완벽하지 않음 (default:0.06)
+			.alphaDecay(conf.extends.topology.simulation.alphaDecay)	// ~0.0228 시뮬레이션 decay - 클수록 빠르지만 배치가 완벽하지 않음 (default:0.06)
 			.force("center", d3Force.forceCenter(bounds.width/2, bounds.height/2));
 
 
@@ -89,7 +90,7 @@ export class TopologyGraph extends GraphBase {
 		});
 
 		// onEnd 이벤트
-		if (conf.topology.simulation.onEnd && typeof conf.topology.simulation.onEnd == "function") nodeSimulation.on("end", conf.topology.simulation.onEnd);
+		if (conf.extends.topology.simulation.onEnd && typeof conf.extends.topology.simulation.onEnd == "function") nodeSimulation.on("end", conf.extends.topology.simulation.onEnd);
 		
 
 

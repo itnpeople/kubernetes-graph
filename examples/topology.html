@@ -23,9 +23,15 @@
 	</nav>
 	<!-- OPTION -->
 	<div class="col-sm"  id="divSearch">
-		<!-- BUTTON -->
 		<div class="row">
-			<div class="col-sm"></div>
+			<div class="col-sm">
+				<div class="row">
+					<div class="col-sm-1">Cluster</div>
+					<div class="col-sm">
+						<input type="text" class="form-control form-control-sm" id="txtCluster">
+					</div>
+				</div>
+			</div>
 			<div class="col-sm-1">
 				<div class="btn-group " role="group">
 					<button type="button" id="btnQuery" class=" btn btn-sm btn-primary ">
@@ -67,28 +73,30 @@
 			// simulation end 이벤트 처리 예
 			var start = new Date();
 			var end
-			var param = {
-				"clusters": {
-					"apps-06": ["cocktail-addon","cocktail-kafka"]
-				}
-			};
+			var cluster = $("#txtCluster").val()
+			var url = cluster? `/api/clusters/${cluster}/topology`: "/data/clusters/apps-05/topology"
 			$.ajax({
-				url: "/api/topology",
-				data: JSON.stringify(param),
+				url: url,
 				success: function(data) {
 					graph.config({
-						topology:{
-							simulation: {
-								alphaDecay:0.3,
-								onEnd: ()=> {
-									end = new Date()
-									console.log(end - start)
+						extends: {
+							topology:{
+								simulation: {
+									alphaDecay:0.3,
+									onEnd: ()=> {
+										end = new Date()
+										console.log(end - start)
+									}
 								}
 							}
 						}
 					})
 					.data(data).render();
-				}
+				},
+				error:function(request,status){
+        			alert(`<${request.status}>\n${request.responseText}`);
+		       }
+
 			});
 
 		});
