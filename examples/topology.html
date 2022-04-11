@@ -26,9 +26,11 @@
 		<div class="row">
 			<div class="col-sm">
 				<div class="row">
-					<div class="col-sm-1">Cluster</div>
-					<div class="col-sm">
-						<input type="text" class="form-control form-control-sm" id="txtCluster">
+					<div class="col-sm-1">Clusters</div>
+					<div class="col-sm-2">
+						<select id="cboCluster" class="form-control form-control-sm">
+							<option value="" selected>default</option>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -61,6 +63,20 @@
 <script>
 
 	$(function() {
+		$.ajax({
+			url: "/api/clusters",
+			beforeSend: function() {
+				$("#cboCluster").empty();
+			},
+			success: function(data) {
+				$("#cboCluster").append($("<option value=\"\">default</option>"))
+				data.forEach( (c)=> {
+					$("#cboCluster").append($("<option value=\""+ c.name + "\">"+ c.name +"</option>"))
+				})
+			}
+		});
+
+
 		// 그래프 정의
 		var graph = new kore3lab.graph.TopologyGraph(".graph");
 
@@ -73,7 +89,7 @@
 			// simulation end 이벤트 처리 예
 			var start = new Date();
 			var end
-			var cluster = $("#txtCluster").val()
+			var cluster = $("#cboCluster").val()
 			var url = cluster? `/api/clusters/${cluster}/topology`: "/data/clusters/apps-05/topology"
 			$.ajax({
 				url: url,

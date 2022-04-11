@@ -1,17 +1,28 @@
 import express			from "express"
-import {Service}		from "./models"
+import {Service}		from "./services"
+import * as kubernetes	from "./kubernetes"
+import { Cluster } from "@kubernetes/client-node";
 
 const router = express.Router();
 
 /**
- * Cluster 토플로지 API
- * 
- * @param
- * 	{
- * 		"acorn-demo": ["cocktail-addon","cocktail-cloud-kr-dev","cocktail-controller"],
- * 		"acorn-rnd": "*",
- * 		"apps-demo": "default"
- * 	}
+ * Workloads
+ */
+router.get('/clusters', async (request:express.Request, response:express.Response) => {
+
+	
+	try {
+		response.json(kubernetes.KubeConfig.instance().contexts);
+	} catch (e:any) {
+		console.log( e.message);
+		response.status(500).json({ status:e.statusCode, message: e.message });
+	}
+
+});
+
+
+/**
+ * 토플로지
  */
 router.get('/clusters/:cluster/topology', async (request:express.Request, response:express.Response) => {
 
@@ -19,6 +30,24 @@ router.get('/clusters/:cluster/topology', async (request:express.Request, respon
 		let service:Service = new Service();
 		let r = await service.topology({cluster:request.params.cluster});
 		response.json(r);
+
+	} catch (e:any) {
+		console.log( e.message);
+		response.status(500).json({ status:e.statusCode, message: e.message });
+	}
+
+});
+
+/**
+ * Workloads
+ */
+router.get('/clusters/:cluster/workloads', async (request:express.Request, response:express.Response) => {
+
+	try {
+		let service:Service = new Service();
+		let r = await service.workloads({cluster:request.params.cluster});
+
+		response.json(Object.fromEntries(r));
 
 	} catch (e:any) {
 		console.log( e.message);

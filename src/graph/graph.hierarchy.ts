@@ -29,37 +29,28 @@ export class HierarchyGraph extends GraphBase {
 		// data 가공
 		let data:Array<model.Node> = [];
 		Object.keys(conf.data).forEach( (k:string)=> {
-			let d = conf.data[k]
-			if (Array.isArray(d)) {
-
-				d = d.reduce((acc, cur, i) => {
-					if(cur.ownerReferences && cur.ownerReferences.kind && cur.ownerReferences.name) {
-
-						d.reduce((a:any, c:any) => {
-							if(c.kind == cur.ownerReferences.kind && c.name == cur.ownerReferences.name) {
-								if(!c.children) c.children=[]
-								c.children.push(cur)
-							}
-						}, {});
-
-					} else {
-						if(!cur.children) cur.children = [];
-						acc.children.push(cur)
-					}
-					return acc;
-				}, {name:k, children:[]})
-
-				data.push(d)
-
-			}
+			let d:Array<model.Node> = conf.data[k]
+			const root = d.reduce((acc, cur:model.Node) => {
+				if(cur.ownerReference && cur.ownerReference.kind && cur.ownerReference.name) {
+					d.reduce((a:model.Node, c:model.Node) => {
+						if(c.kind == cur.ownerReference!.kind && c.name == cur.ownerReference!.name) {
+							if(!c.children) c.children=[]
+							c.children.push(cur)
+						}
+						return a
+					}, new model.Node());
+				} else {
+					if(!cur.children) cur.children = [];
+					acc.children.push(cur)
+				}
+				return acc;
+			}, new model.Node(k))
+			data.push(root)
 		});
-
-
+		// rendering groups
 		// svg > g.graph > g.outline > g.outlineWrap > g.group
 		//		> text
 		//      > g.boxWrap > g.box > g.tree
-
-		// rendering groups
 		let gH = 0;
 		const padding = conf.extends.hierarchy.group.box.padding;
 		const width:number = bounds.width - 2 //line width
@@ -73,17 +64,19 @@ export class HierarchyGraph extends GraphBase {
 				return `translate(0,${els[i].getBBox().y * -1})`
 			})
 
-			let h = t.node()!.getBBox().height + conf.extends.hierarchy.group.title.spacing;
-			UI.appendBox(g, (box: d3.Selection<SVGGElement, any, SVGElement, any>)=> {
-				d.children.forEach((c:model.Node)=> {
-					let gg = box.append("g").attr("class","tree")
-						.call(HierarchyGraph.renderHierarchy, c, treeWidth, nodeHeight)
-						.attr("transform", (d:any,i:number,els: Array<SVGGElement>|d3.ArrayLike<SVGGElement>)=> {
-							return `translate(0,${h-els[i].getBBox().y})`
-						});
-					h += gg.node()!.getBBox().height + conf.extends.hierarchy.group.box.tree.spacing;	// multi-root 간 간격
-				});
-			}, width, padding, {width:1, dash:"2 2"});
+			if (d.children.length > 0) {
+				let h = t.node()!.getBBox().height + conf.extends.hierarchy.group.title.spacing;
+				UI.appendBox(g, (box: d3.Selection<SVGGElement, any, SVGElement, any>)=> {
+					d.children.forEach((c:model.Node)=> {
+						let gg = box.append("g").attr("class","tree")
+							.call(HierarchyGraph.renderHierarchy, c, treeWidth, nodeHeight)
+							.attr("transform", (d:any,i:number,els: Array<SVGGElement>|d3.ArrayLike<SVGGElement>)=> {
+								return `translate(0,${h-els[i].getBBox().y})`
+							});
+						h += gg.node()!.getBBox().height + conf.extends.hierarchy.group.box.tree.spacing;	// multi-root 간 간격
+					});
+				}, width, padding, {width:1, dash:"2 2"});
+			}
 
 			// + move Y
 			g.attr("transform", `translate(0,${gH})`)

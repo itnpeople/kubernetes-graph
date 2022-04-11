@@ -41,12 +41,12 @@ export class KubeConfig {
 		this._kubeConfig.applyToRequest(this._options);
 	}
 
-	/**
-	 * 클라이언트 리턴
-	 */
-	public makeApiClient():k8s.CoreV1Api {
-		return this.config().makeApiClient(k8s.CoreV1Api);
-	}
+	///**
+	// * 클라이언트 리턴
+	// */
+	//public makeApiClient():k8s.CoreV1Api {
+	//	return this.config().makeApiClient(k8s.CoreV1Api);
+	//}
 
 	/**
 	 * api raw 호출
@@ -61,10 +61,10 @@ export class KubeConfig {
 	/**
 	 * Context(클러스터)별 K8s static 인스턴스 리턴
 	 */
-	public static instance(context?:string):KubeConfig {
+	public static instance(context?:string):k8s.KubeConfig {
 		if(!this._config) this._config = new KubeConfig();
 		if(context) this._config.setCurrentContext(context);
-		return this._config;
+		return this._config.config();
 	}
 
 }

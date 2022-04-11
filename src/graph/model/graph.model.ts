@@ -1,35 +1,37 @@
-import * as d3Force		from "d3-force";
+import * as d3Force			from "d3-force";
 import * as d3Hierarchy		from "d3-hierarchy";
+import * as k8s				from "@kubernetes/client-node"
 
 /** 
 */
 export namespace HierarchyModel {
 
+	export class Hierarchy extends Map<string, Array<Node>>{}
+
 	export class Node {
 		name:string
 		kind:string
 		depth:number
-		ownerReferences:Node 
+		ownerReference?:Node 
 		children:Array<Node>
-	}
 
+		constructor(kind?:string, metadata?:k8s.V1ObjectMeta) {
+			if(metadata) {
+				if(kind) this.kind = kind
+				this.name = metadata.name!
+				if(metadata.ownerReferences) {
+					this.ownerReference = new Node()
+					this.ownerReference.kind = metadata.ownerReferences[0].kind
+					this.ownerReference.name = metadata.ownerReferences[0].name
+				}
+			} else {
+				this.name = kind!
+			}
+			this.children  = [];
+		}
+	}
 }
 
-/** 
-*/
-export namespace Tree {
-
-	export class Tree {
-		name:string
-		kind:NodeKind
-		children?:Array<Tree>
-	}
-
-	export enum NodeKind {
-		USER = "user", GROUP = "group", ROLE = "role", CLUSTER_ROLE = "clusterrole", SERVICE_ACCOUNT = "serviceaccount", ROLEBINDING = "rolebinding", CLUSTER_ROLEBINDING = "clusterrolebinding", SECRET ="secret"
-	}
-
-}
 
 /** 
  * Topology 데이터 모델
