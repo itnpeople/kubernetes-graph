@@ -60,7 +60,7 @@ export class UI {
 	 * 주어진 element 의 부모 element 너비 맞추어 수평정렬
 	 * 
 	 */	
-	public static alignHorizonal(el:SVGElement) {
+	public static alignHorizontal(el:SVGElement) {
 
 		if (el ==null || el.parentElement == null) return 
 
@@ -77,7 +77,7 @@ export class UI {
 	 * 같은 형재 element 들을 가운데 수평 정렬
 	 * 
 	 */	
-	public static alignHorizonals(els:Array<SVGElement>) { 
+	public static alignHorizontals(els:Array<SVGElement>) { 
 
 		if(els.length < 1) return;
 		let maxWidth:number = 0;
@@ -174,7 +174,10 @@ export class UI {
 
 	public static appendBox(parentEl:d3.Selection<SVGGElement, any, SVGElement,any>, 
 		render: (selection: d3.Selection<SVGGElement, any, SVGElement, any>, ...args: any[]) => void, 
-		width?:number, padding?:{top:number,left:number, right:number, bottom:number}, border?:{width:number, dash:string}): d3.Selection<SVGGElement, any, SVGElement,any> {
+		width?:number,
+		padding?:{top:number,left:number, right:number, bottom:number},
+		bg?:{fill:string, opacity?:number},
+		border?:{width:number, color?:string, dash?:string}): d3.Selection<SVGGElement, any, SVGElement,any> {
 
 		const boxWrap = parentEl.append("g").attr("class","boxWrap");
 
@@ -182,18 +185,26 @@ export class UI {
 		const box = boxWrap.append("g").attr("class","box");
 		if(render) box.call(render)
 
-		// after rendering > dash box
+		// after rendering > calcuate border(background) bounds
 		let bounds:DOMRect = boxWrap.node()!.getBBox();
 		const bottom:number = bounds.y + bounds.height + (padding?padding.top+padding.bottom:0);
 		const right:number = bounds.x + (width?width:bounds.width); //stroke-width 반영
 
-		const background = boxWrap.append("path")
+		// box (insert before g.box)
+		const background = boxWrap.insert("path","g.box")
 			.attr("class","background")
 			.attr("d",`M${bounds.x},${bounds.y} L${right},${bounds.y} L${right},${bottom} L${bounds.x},${bottom} L${bounds.x},${bounds.y}`)
-			//.attr("fill-opacity",".1")
-			.attr("fill","none")
 
-		if(border) background.attr("stroke","black").attr("stroke-width",border.width).attr("stroke-dasharray", border.dash)
+		if(bg) {
+			background.attr("fill",bg.fill)
+			if(bg.fill != "none" && bg.opacity) background.attr("fill-opacity",bg.opacity)
+		}
+
+		if(border) {
+			background.attr("stroke","black").attr("stroke-width",border.width)
+			if (border.color)  background.attr("stroke", border.color)
+			if (border.dash) background.attr("stroke-dasharray", border.dash)
+		}
 			
 
 		if(padding) Transform.instance(box.node()!).shift(padding.left,padding.top)

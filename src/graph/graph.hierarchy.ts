@@ -22,6 +22,12 @@ export class HierarchyGraph extends GraphBase {
 		
 		if(!conf.data) return;
 
+		// Set min,max width,height options
+		if(conf.extends.hierarchy.scale.minWidth > 0 && bounds.width < conf.extends.hierarchy.scale.minWidth*conf.global.scale.ratio)  bounds.width = conf.extends.hierarchy.scale.minWidth;
+		if(conf.extends.hierarchy.scale.maxWidth > 0 && bounds.width > conf.extends.hierarchy.scale.maxWidth*conf.global.scale.ratio)  bounds.width = conf.extends.hierarchy.scale.maxWidth;
+		if(conf.extends.hierarchy.scale.minHeight > 0 && bounds.height < conf.extends.hierarchy.scale.minHeight*conf.global.scale.ratio)  bounds.height = conf.extends.hierarchy.scale.minHeight;
+		if(conf.extends.hierarchy.scale.maxHeight > 0 && bounds.height > conf.extends.hierarchy.scale.maxHeight*conf.global.scale.ratio)  bounds.height = conf.extends.hierarchy.scale.maxHeight;
+
 		// svg > defs
 		const svgEl:d3Select.Selection<SVGSVGElement, any, SVGElement, any> = this.svg()
 		if(svgEl.select("defs").size() == 0) svgEl.append("defs").call(HierarchyGraph.renderDefs, conf);
@@ -53,19 +59,22 @@ export class HierarchyGraph extends GraphBase {
 		//      > g.boxWrap > g.box > g.tree
 		let gH = 0;
 		const padding = conf.extends.hierarchy.group.box.padding;
-		const width:number = bounds.width - 2 //line width
+		const width:number = bounds.width - (conf.extends.hierarchy.group.box.border.width*2) //line width
 		const treeWidth:number = width - (padding.left + padding.right);
 		const nodeHeight:number = conf.extends.hierarchy.group.box.tree.node.height;
 
 		data.forEach((d:model.Node)=> {
 
-			const g = outlineEl.append("g").attr("class","group");
-			const t = g.append("text").text(d.name).attr("transform", (d:any,i:number,els:SVGTextElement[]|d3.ArrayLike<SVGTextElement>)=> {
-				return `translate(0,${els[i].getBBox().y * -1})`
-			})
+			const g:d3.Selection<SVGGElement, any, SVGElement, any> = outlineEl.append("g").attr("class","group");
+			let t;
+			if(conf.extends.hierarchy.group.title.visible) {
+				t = g.append("text").text(d.name).attr("transform", (d:any,i:number,els:SVGTextElement[]|d3.ArrayLike<SVGTextElement>)=> {
+					return `translate(0,${els[i].getBBox().y * -1})`
+				})
+			}
 
 			if (d.children.length > 0) {
-				let h = t.node()!.getBBox().height + conf.extends.hierarchy.group.title.spacing;
+				let h = t ? t.node()!.getBBox().height + conf.extends.hierarchy.group.title.spacing:0;
 				UI.appendBox(g, (box: d3.Selection<SVGGElement, any, SVGElement, any>)=> {
 					d.children.forEach((c:model.Node)=> {
 						let gg = box.append("g").attr("class","tree")
@@ -75,7 +84,7 @@ export class HierarchyGraph extends GraphBase {
 							});
 						h += gg.node()!.getBBox().height + conf.extends.hierarchy.group.box.tree.spacing;	// multi-root 간 간격
 					});
-				}, width, padding, {width:1, dash:"2 2"});
+				}, width, padding, conf.extends.hierarchy.group.box.background, conf.extends.hierarchy.group.box.border);
 			}
 
 			// + move Y
@@ -131,13 +140,10 @@ export class HierarchyGraph extends GraphBase {
 			.attr("height",icoWH).attr("width",icoWH)
 			.attr("xlink:href", (d:d3.HierarchyPointNode<model.Node>)=>`#ac_ic_${(d.data.kind || "").toLowerCase()}`)
 		
-
-
 		const nd = node.append("text")
 			.attr("dy", (d) => d.children ? icoWH/4 : icoWH/2)
 			.attr("x", icoWH+2.5)
 			.text((d:d3.HierarchyPointNode<model.Node>) =>d.data.name);
-
 
 		nd.each( (d:d3.HierarchyPointNode<model.Node>,i:number,els:SVGTextElement[]|d3.ArrayLike<SVGTextElement>) =>{
 			UI.ellipsisText(els[i], nodeWidth)

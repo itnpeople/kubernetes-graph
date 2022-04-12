@@ -76,7 +76,8 @@ export class TopologyGraph extends GraphBase {
 			// .force('collide',  d3Force.forceCollide( (d:any) => { return d.kind=="cluster" ? 0 : 60}))
 			.alpha(1)
 			.alphaDecay(conf.extends.topology.simulation.alphaDecay)	// ~0.0228 시뮬레이션 decay - 클수록 빠르지만 배치가 완벽하지 않음 (default:0.06)
-			.force("center", d3Force.forceCenter(bounds.width/2, bounds.height/2));
+			.force("center", d3Force.forceCenter(bounds.width/2/conf.global.scale.ratio, bounds.height/2/conf.global.scale.ratio));
+
 
 
 		// tick
