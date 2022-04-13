@@ -1,7 +1,7 @@
 import * as d3		from "d3";
-import * as d3Zoom	from "d3-zoom";
 import {Config}		from "@/components/graph/model/config.model";
-import {Bounds, UI}		from "@/components/graph/utils/ui";
+import {Toolbar}	from "@/components/graph/toolbar";
+import {Bounds, UI}	from "@/components/graph/utils/ui";
 import {Transform}	from "@/components/graph/utils/transform";
 import {Lang}		from "@/components/graph/utils/lang";
 
@@ -11,13 +11,12 @@ import {Lang}		from "@/components/graph/utils/lang";
 export abstract class GraphBase {
 	
 	private _bounds:Bounds;
-	private _outlineEl:SVGGElement;
-	private _graphEl:d3.Selection<SVGGElement,any,SVGElement,any>;
+	private _outlineEl:d3.Selection<SVGGElement,any,SVGElement,any>;
+	private _outlineWrapEl:d3.Selection<SVGGElement,any,SVGElement,any>;
 	private _svg:d3.Selection<SVGSVGElement, any, SVGElement, any>;
-	private _zoom:d3Zoom.ZoomBehavior<Element,any>;
+	private _zoomBehavior:d3.ZoomBehavior<any,any>;
 	private _container:HTMLElement;
 	private _config:Config = new Config();
-	private _beforeAlign:{vertical:string, horizontal:string} = {vertical:"",horizontal:"" };
 
 	constructor(el:HTMLElement, conf?:Config) {
 		this._container = el;
@@ -30,23 +29,23 @@ export abstract class GraphBase {
 	public data(_?:any):GraphBase|any {
 		return arguments.length ? (this._config.data = _, this) : this._config.data;
 	}
-	public bounds(_?:Bounds):any {
-		return arguments.length ? (this._bounds = _!, this): this._bounds;
+	public bounds(_?:Bounds):Bounds {
+		return arguments.length ? (this._bounds = _!, this._bounds): this._bounds;
 	}
-	protected outlineEl(_?:SVGGElement):any {
-		return arguments.length ? (this._outlineEl = _!, this): this._outlineEl;
+	public svg(_?:d3.Selection<SVGSVGElement, any, SVGElement, any>):d3.Selection<SVGSVGElement, any, SVGElement, any> {
+		return arguments.length ? (this._svg = _!, this._svg): this._svg;
 	}
-	protected outlineWrapEl(_?:d3.Selection<SVGGElement,any,SVGElement,any>):any {
-		return arguments.length ? (this._graphEl = _!, this): this._graphEl;
+	protected outlineWrapEl(_?:d3.Selection<SVGGElement,any,SVGElement,any>):d3.Selection<SVGGElement,any,SVGElement,any> {
+		return arguments.length ? (this._outlineWrapEl = _!, this._outlineWrapEl): this._outlineWrapEl;
 	}
-	public svg(_?:d3.Selection<SVGSVGElement, any, SVGElement, any>):any {
-		return arguments.length ? (this._svg = _!, this): this._svg;
+	public outlineEl(_?:d3.Selection<SVGGElement,any,SVGElement,any>):d3.Selection<SVGGElement,any,SVGElement,any> {
+		return arguments.length ? (this._outlineEl = _!, this._outlineEl): this._outlineEl;
 	}
-	public container(_?:HTMLElement):any {
-		return arguments.length ? (this._container = _!, this): this._container;
+	protected container(_?:HTMLElement):HTMLElement {
+		return arguments.length ? (this._container = _!, this._container): this._container;
 	}
-	public zoomBehavior(_?:d3Zoom.ZoomBehavior<Element,any>):any {
-		return arguments.length ? (this._zoom = _!, this): this._zoom;
+	protected zoomBehavior(_?:d3.ZoomBehavior<Element,any>):d3.ZoomBehavior<SVGGElement,any> {
+		return arguments.length ? (this._zoomBehavior = _!, this._zoomBehavior): this._zoomBehavior;
 	}
 	
 
@@ -75,7 +74,6 @@ export abstract class GraphBase {
 
 		let outlineWrapEl:d3.Selection<SVGGElement,any,SVGElement,any> = svg.select("g.outlineWrap");
 		let outlineEl:d3.Selection<SVGGElement,any,SVGElement,any>;
-		let attrTransform:string = "";
 		const conf:Config = <Config>this.config();
 
 		// size 재 계산
@@ -85,15 +83,8 @@ export abstract class GraphBase {
 		}
 
 		if(outlineWrapEl.size() > 0) {
-			// 이전에 outline 이 있다면  
-			// 		- 이전에 정렬정보가 변경되지 않고
-			//		- transform 속성값을 삭제하기 전에 저장하여 나중에 재 설정해준다.
-			outlineEl = svg.select<SVGGElement>("g.outline");
-			if(outlineEl.size() > 0) {
-				attrTransform = (this._beforeAlign.vertical  != this._config.global.align.vertical ||  this._beforeAlign.horizontal  != this._config.global.align.horizontal ) ? "": outlineEl.attr("transform")
-				outlineEl.remove();
-			}
-			this._beforeAlign  = Object.assign({}, this._config.global.align);
+			// 이전에 outline 이 있다면  삭제
+			svg.selectAll("g.outline").remove();
 
 		} else {
 			// g.outlineWrap > g.outline 추가 
@@ -103,16 +94,16 @@ export abstract class GraphBase {
 			outlineWrapEl.append("rect").attr("class","background").attr("width",bounds.width).attr("height",bounds.height).attr("fill","transparent")
 		}
 
-		// padding
+		// g.outline 추가
 		outlineEl = outlineWrapEl.append("g").attr("class","outline");
 		if (conf.global.padding.top  != 0) svg.style("padding-top", conf.global.padding.top);
 		if (conf.global.padding.bottom  != 0) svg.style("padding-bottom", conf.global.padding.bottom);
 		if (conf.global.padding.left  != 0) svg.style("padding-left", conf.global.padding.left);
 		if (conf.global.padding.right  != 0) svg.style("padding-right", conf.global.padding.right);
 
+
 		// 멤버변수들
-		this.bounds(bounds);
-		this.outlineEl(outlineEl.node()!);
+		this.outlineEl(outlineEl);
 		this.svg(svg);
 		this.container(container.node());
 		this.outlineWrapEl(outlineWrapEl);
@@ -120,35 +111,57 @@ export abstract class GraphBase {
 		// 데이터 모델 구성 후 그려주기
 		this.populate(outlineEl, bounds, conf);
 
-		//scale-ratio 옵션 반영
-		if(conf.global.scale.ratio != 1) {
-			Transform.instance(this.outlineEl()).ratioScale(conf.global.scale.ratio);
-		}
+		// outline 수평/수직 정렬
+		if(conf.global.align.horizontal=="center") UI.alignHorizontal(outlineEl.node()!);
+		if(conf.global.align.vertical=="middle") UI.alignVertical(outlineEl.node()!);
 
-		// 이전에 outline 이 있다면  이전 속성값 다시 지정하고 수직, 수평정렬은 수행하지 않는다.
-		if(attrTransform) outlineEl.attr("transform",attrTransform);
-		else {
-			if(conf.global.align.horizontal=="center") UI.alignHorizontal(outlineEl.node()!);	// outline 수평 정렬
-			if(conf.global.align.vertical=="middle") UI.alignVertical(outlineEl.node()!);	// outline 수직 정렬
-		}
+		//bounds 재계산
+		this.bounds(new Bounds(outlineEl));
 
+		// Toolbar
+		Toolbar.render(this);
 
-		// ZOOM
+		// ZOOM Behavior
 		this.zoomBehavior(
-			d3Zoom.zoom().on("zoom", (event)=> {
-				outlineEl.attr("transform", event.transform);  
-			})
+			d3.zoom().on("zoom", (event)=> { outlineEl.attr("transform", event.transform); })
 		);
 
-		// ZOOM 가운데 정렬에 따를 초기화
-		let transform:Transform = Transform.instance(this.outlineEl());
-		outlineWrapEl.call(this.zoomBehavior().transform, d3Zoom.zoomIdentity.translate(transform.x, transform.y).scale(transform.k));
-
-		// ZOOM 바인딩
+		// ZOOM > 바인딩
 		outlineWrapEl.call(this.zoomBehavior());
 		outlineWrapEl.on("dblclick.zoom", null);	//zoom 더블클릭 이벤트 drop (because event bubbling)
+
+		// Outline Transform > scale-ratio 옵션 반영
+		if(conf.global.scale.ratio != 1) {
+			this.zoom({k:conf.global.scale.ratio});
+		} else {
+			this.zoom();
+		}
+
 		return this;
 
+	}
+
+
+	/**
+	 * ZOOM
+	 */
+	public zoom(z?:{x?:number,y?:number,k?:number}):GraphBase {
+
+		let transform:d3.ZoomTransform = d3.zoomTransform(this.outlineEl().node()!);
+		if (z) {
+			// translate
+			if(!z.x) z.x = transform.x;
+			if(!z.y) z.y = transform.y;
+			if(!z.k) z.k = transform.k;
+		} else {
+			// translate screen-fit
+			const boundsEl:DOMRect = this.outlineEl().node()!.getBBox();
+			const k:number = Math.min(boundsEl.width/this.bounds().width,boundsEl.height/this.bounds().height);
+			z = {x:this.bounds().x, y:this.bounds().y, k:k};
+		}
+		this.outlineWrapEl().call(this.zoomBehavior().transform, d3.zoomIdentity.translate(z.x!, z.y!).scale(z.k!));
+
+		return this;
 	}
 
 	/**
@@ -156,57 +169,24 @@ export abstract class GraphBase {
 	 * 
 	 * @param ratio 배율 (1보다 작으면 축소, 1보다 크면 확대)
 	 */
-	public zoomRatio(ratio:number,range?:Array<number>):GraphBase {
+	public zoomRatio(ratio:number,minRatio?:number, maxRatio?:number):GraphBase {
 
-		let transform = d3Zoom.zoomTransform(this.outlineWrapEl().node());
+		
+		let transform:d3.ZoomTransform = d3.zoomTransform(this.outlineEl().node()!);
 		let k:number = transform.k*ratio;
-		if(range) {
-			if(transform.k < range[0])  k = range[0];	//최소배율
-			if(transform.k > range[1])  k = range[1];	//최대배율
-		}
 
-		this.outlineWrapEl().call(this.zoomBehavior().transform, d3Zoom.zoomIdentity.translate(transform.x, transform.y).scale(k));
+		const conf:Config = <Config>this.config();
+		if (!minRatio) minRatio = conf.global.scale.minRatio;
+		if (!maxRatio) maxRatio = conf.global.scale.maxRatio;
 
-		return this;
-	}
+		if(minRatio > 0 && k < minRatio)  k = minRatio;	//최소배율
+		if(maxRatio > 0 && k > maxRatio)  k = maxRatio;	//최대배율
 
-
-	/**
-	 * ZOOM
-	 * 
-	 * @param k 배율 (0 이면 SVG에 맞춤)
-	 */
-	public zoom(k?:number):GraphBase {
-
-		if(k) {
-			let transform = d3Zoom.zoomTransform(this.outlineWrapEl().node());
-			this.outlineWrapEl().call(this.zoomBehavior().transform, d3Zoom.zoomIdentity.translate(transform.x, transform.y).scale(k));
-		} else {
-
-			Transform.instance(this.outlineEl()).translate(0,0).ratioScale(1);	//초기화
-
-			let rect = this.outlineEl().getBoundingClientRect();
-			let bounds:DOMRect =  this.bounds();
-			
-			let transform:Transform = new Transform(this.outlineEl());
-
-			rect.width = rect.width * 1/transform.k;
-			rect.height = rect.height * 1/transform.k;
-			transform.k = 1;
-
-			// k 결정 (너비, 높이)
-			if(rect.width>bounds.width) transform.k = bounds.width/rect.width;
-			if(rect.height>bounds.height && transform.k>bounds.height/rect.height) transform.k = bounds.height/rect.height;
-			
-			// x,y 축 이동 (가운데 정렬)
-			transform.x = (bounds.width-(rect.width*transform.k))/2-rect.x;
-			transform.y = (bounds.height-(rect.height* transform.k))/2-rect.y;
-
-			this.outlineWrapEl().call(this.zoomBehavior().transform, d3Zoom.zoomIdentity.translate(transform.x, transform.y).scale(transform.k==0?1:transform.k));
-		}
+		this.zoom({x: transform.x, y:transform.y, k:k})
 
 		return this;
 	}
+
 
 	/**
 	 * 리사이즈 처리
@@ -214,11 +194,11 @@ export abstract class GraphBase {
 	 */
 	public resize() {
 
-		if(!this.bounds()) return;
-		
-		let w:number = this.bounds().width;
-		let h:number = this.bounds().height;
-		let transform:Transform = Transform.instance(this._outlineEl);
+		const bounds:Bounds = this.bounds() as Bounds;
+		if(!bounds) return;
+		let w:number = bounds.width;
+		let h:number = bounds.height;
+		let transform:Transform = Transform.instance(this.outlineEl().node()!);
 
 		let b:ClientRect = this._container.getBoundingClientRect();
 		this.svg().attr("width", b.width).attr("height", b.height);
@@ -233,7 +213,7 @@ export abstract class GraphBase {
 		transform.y = transform.y* k
 		transform.k = transform.k* k
 
-		this.outlineWrapEl().call(this.zoomBehavior().transform, d3Zoom.zoomIdentity.translate(transform.x, transform.y).scale(transform.k==0?1:transform.k));
+		this.outlineWrapEl().call(this.zoomBehavior().transform, d3.zoomIdentity.translate(transform.x, transform.y).scale(transform.k==0?1:transform.k));
 		this.bounds(<DOMRect>this._container.getBoundingClientRect());
 
 	}

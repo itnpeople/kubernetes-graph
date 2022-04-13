@@ -45,8 +45,8 @@ export class Transform {
 		return (this.x = x, this.y = y, this.transform());
 	}
 
-	ratioScale(ratio:number):Transform {
-		return (this.k = this.k*ratio, this.transform());
+	scale(ratio:number):Transform {
+		return (this.k = ratio, this.transform());
 	}
 
 	shift(x:number,y:number):Transform {

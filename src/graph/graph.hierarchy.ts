@@ -92,6 +92,10 @@ export class HierarchyGraph extends GraphBase {
 			gH += g.node()!.getBBox().height + conf.extends.hierarchy.group.spacing;
 		});
 
+		// toolbar aline default 값 정의 -  "none"(사용자 지정 X)이면
+		if(conf.global.toolbar.align.horizontal == "none") conf.global.toolbar.align.horizontal = "right";
+		if(conf.global.toolbar.align.vertical == "none") conf.global.toolbar.align.vertical = "top";
+
 	}
 
 

@@ -1,6 +1,7 @@
 import * as d3		from "d3";
-import {UI}			from "@/components/graph/utils/ui";
+import {Bounds, UI}			from "@/components/graph/utils/ui";
 import {GraphBase}	from "@/components/graph/graph.base";
+import {Config}		from "@/components/graph/model/config.model";
 import "@/components/graph/toolbar.css";
 
 export class LegendModel {
@@ -21,18 +22,25 @@ export class Toolbar {
 	 * 		-  범례 랜더링 포함
 	 * 
 	 */
-	public static render(svgEl:d3.Selection<SVGSVGElement,any,SVGElement,any>, owner:GraphBase, legends:Array<LegendModel>) {
+	public static render(owner:GraphBase) {
+
+		const svgEl:d3.Selection<SVGSVGElement,any,SVGElement,any> = owner.svg();
 
 		const margin:number = 10;
 		let Y:number = margin;
 
 		if(svgEl.select("g.toolbar").size()>0) return;
 
+		let legends:Array<LegendModel> = [];
+		const conf:Config = <Config>owner.config();
+
+
+		// buttons
 		let toolbarEl:d3.Selection<SVGGElement,any,SVGElement,any> = svgEl.append("g")
 			.attr("class","toolbar")
 			.attr("transform",`translate (${margin}, ${Y})`)
 
-		// zoom - in 
+		// button - zoom in 
 		toolbarEl.append("g")
 			.attr("id","ac_btn_zoomin")
 			.attr("class","button")
@@ -41,7 +49,7 @@ export class Toolbar {
 				owner.zoomRatio(1.1);
 			});
 		
-		// zoom - out
+		// button - zoom out
 		toolbarEl.append("g")
 			.attr("id","ac_btn_zoomout")
 			.attr("class","button")
@@ -50,7 +58,7 @@ export class Toolbar {
 				owner.zoomRatio(0.9);
 			});
 
-		// zoom - 맞춤
+		// button - zoom fit
 		toolbarEl.append("g")
 			.attr("id","ac_btn_zoomfit")
 			.attr("class","button")
@@ -59,40 +67,46 @@ export class Toolbar {
 				owner.zoom();
 			});
 
-		// 범례 버튼
-		toolbarEl.append("g")
-			.attr("id","ac_btn_legend")
-			.attr("class","button")
-			.on("click", () => {
-				let g = d3.select("g.legend");
-				g.attr("visibility", g.attr("visibility")=="visible"?"hidden":"visible");
-			})
-			.html('<rect></rect><text>범례</text>')
+		// legends
+		if(legends.length > 0) {
 
-		// 범례 들어갈 틀 만들기 : g.legend > foreignObject > div (스크롤) > svg > g.outline
-		Y += toolbarEl.node()!.getBoundingClientRect().height + margin;	//Y 값 - 툴바 버튼 높이 반영
-
-		// 범레 g.legend 추가
-		let legendEl:d3.Selection<SVGGElement,any,SVGElement,any> = svgEl.append("g")
-			.attr("class","legend")
-			.attr("visibility", "visible")
+			toolbarEl.append("g")
+				.attr("id","ac_btn_legend")
+				.attr("class","button")
+				.on("click", () => {
+					let g = d3.select("g.legend");
+					g.attr("visibility", g.attr("visibility")=="visible"?"hidden":"visible");
+				})
+				.html('<rect></rect><text>범례</text>')
 
 
-		// g.legend  에 스크롤 가능한 레이어 추가
-		UI.appendScrollableLayer(margin, Y, owner.bounds(), legendEl, Toolbar.renderLegends, legends);
+			// 범례 들어갈 틀 만들기 : g.legend > foreignObject > div (스크롤) > svg > g.outline
+			Y += toolbarEl.node()!.getBoundingClientRect().height + margin;	//Y 값 - 툴바 버튼 높이 반영
+
+			// 범레 g.legend 추가
+			let legendEl:d3.Selection<SVGGElement,any,SVGElement,any> = svgEl.append("g")
+				.attr("class","legend")
+				.attr("visibility", "visible")
 
 
-		// 닫기 버튼
-		legendEl.selectAll("g.outline").append("g")
-			.attr("class","button")
-			.attr("height", "24").attr("width", "24")
-			.attr("xlink:href", "#ac_ic_close")
-			.on("click",() => {
-				d3.select("g.legend").attr("visibility","hidden");
-			})
-			.attr("transform", `translate (${legendEl.node()!.getBoundingClientRect().width -(margin*2+24)}, 0)`)
-			.html(`<rect></rect><g class="ico"><use width="24" height="24" href="#ac_ic_close"></use></g>`)
-		
+			// g.legend  에 스크롤 가능한 레이어 추가
+			UI.appendScrollableLayer(margin, Y, owner.bounds(), legendEl, Toolbar.renderLegends, legends);
+
+			// 닫기 버튼
+			legendEl.selectAll("g.outline").append("g")
+				.attr("class","button")
+				.attr("height", "24").attr("width", "24")
+				.attr("xlink:href", "#ac_ic_close")
+				.on("click",() => {
+					d3.select("g.legend").attr("visibility","hidden");
+				})
+				.attr("transform", `translate (${legendEl.node()!.getBoundingClientRect().width -(margin*2+24)}, 0)`)
+				.html(`<rect></rect><g class="ico"><use width="24" height="24" href="#ac_ic_close"></use></g>`)
+
+		}
+
+		// align 
+		UI.align(toolbarEl.node()!, conf.global.toolbar.align.horizontal, conf.global.toolbar.align.vertical, conf.global.toolbar.margin);
 
 	}
 

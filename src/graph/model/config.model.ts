@@ -10,9 +10,14 @@ export class Config {
 			vertical: "none"|"middle"
 			horizontal: "none"|"center"
 		}
-		padding: {top:number, left:number, right:number, bottom:number}
+		padding: { top:number, left:number, right:number, bottom:number }
+		toolbar: {
+			visible:boolean
+			align: { horizontal:"none"|"left"|"right"|"center", vertical:"none"|"top"|"bottom"|"middle" }
+			margin: { left:number, top:number, right:number, bottom:number} 
+		}
 		scale: {
-			ratio:number
+			ratio:number, maxRatio:number, minRatio:number
 		}
 	}
 	data?:any
@@ -61,8 +66,13 @@ export class Config {
 				vertical: "none",
 				horizontal: "none"	
 			},
+			toolbar: {
+				visible: true,
+				align: { horizontal:"none", vertical:"none" },
+				margin: { top: 5, left: 5, right:5, bottom:5 }
+			},
 			padding: { top: 0, left: 0, right:0, bottom:0 },
-			scale: { ratio: 1 }
+			scale: { ratio: 1, maxRatio: 0, minRatio: 0 }
 		};
 		this.extends = {
 			hierarchy: {

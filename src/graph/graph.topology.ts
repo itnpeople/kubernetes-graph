@@ -1,8 +1,6 @@
 import * as d3Select			from "d3-selection";
 import * as d3Force				from "d3-force";
-import * as d3Drag				from "d3-drag";
 import {GraphBase}				from "@/components/graph/graph.base";
-import {LegendModel, Toolbar}	from "@/components/graph/toolbar";
 import {Config}					from "@/components/graph/model/config.model";
 import {TopologyModel as model}	from "@/components/graph/model/graph.model"
 import "@/components/graph/graph.topology.css";
@@ -93,23 +91,6 @@ export class TopologyGraph extends GraphBase {
 		// onEnd 이벤트
 		if (conf.extends.topology.simulation.onEnd && typeof conf.extends.topology.simulation.onEnd == "function") nodeSimulation.on("end", conf.extends.topology.simulation.onEnd);
 		
-
-
-		// 범례
-		const legends:Array<LegendModel> = [
-			{
-				header: "Element",
-				rows: [
-					{ label: "Cluster", ico: '<g><use class="ico" href="#ac_ic_node_cluster" width="20" height="20"></use></g>' },
-					{ label: "Node", ico: '<g><use class="ico" href="#ac_ic_node_node" width="20" height="20"></use></g>' },
-					{ label: "Pod", ico: '<g><use class="ico" href="#ac_ic_node_pod" width="20" height="20"></use></g>' },
-					{ label: "Container", ico: '<g><use class="ico" href="#ac_ic_node_container" width="20" height="20"></use></g>' }
-				],
-				y: 0
-			}
-		]
-		this.svg().call(Toolbar.render, this, legends);
-
 	}
 
 	/**

@@ -15,9 +15,12 @@ export class Bounds {
 		let bounds:DOMRect
 		
 		if( selection.node() instanceof SVGGElement ) {
-			bounds = (<SVGGElement>selection.node()!).getBBox()
-			this.x = bounds.x;
-			this.y = bounds.y;
+
+			const transform:Transform = Transform.instance(selection.node()!)
+			this.x = transform.x;
+			this.y = transform.y;
+
+			bounds = (<SVGGElement>selection.node()!).getBBox();
 			this.width = bounds.width;
 			this.height = bounds.height;
 			this.bottom = bounds.y + bounds.height;
@@ -95,6 +98,33 @@ export class UI {
 		});
 
 
+	}
+
+	public static align(el:SVGElement, horizontal:"none"|"left"|"right"|"center", vertical:"none"|"top"|"bottom"|"middle",  margin?: {left?:number, top?:number, right?:number,bottom?:number}) { 
+
+		if(!el || !el.parentElement) return
+		const bounds:DOMRect = el.parentElement.getBoundingClientRect();
+
+		let X:number=0, Y:number=0;
+
+		if(horizontal == "right") {
+			X = bounds.width - el.getBoundingClientRect().width - ((margin && margin.right) ? margin.right: 0);
+		} else if(horizontal == "center") {
+			X = (bounds.width - el.getBoundingClientRect().width - ((margin && margin.right) ? margin.right: 0))/2;
+		} else {
+			X = (margin && margin.left) ? margin.left: 0;
+		}
+
+		if(vertical == "bottom") {
+			Y = bounds.height - el.getBoundingClientRect().height - ((margin && margin.bottom) ? margin.bottom: 0) ;
+		} else if(vertical == "middle") {
+			Y = (bounds.height - el.getBoundingClientRect().height - ((margin && margin.bottom) ? margin.bottom: 0))/2;
+		} else {
+			Y = (margin && margin.top) ? margin.top: 0;
+		}
+
+		console.log(X,Y)
+		Transform.instance(el).translate(X,Y)
 	}
 
 
