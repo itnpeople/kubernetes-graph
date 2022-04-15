@@ -20,25 +20,20 @@ export class Toolbar {
 	/**
 	 * 툴바 랜더링
 	 * 		-  범례 랜더링 포함
-	 * 
 	 */
 	public static render(owner:GraphBase) {
 
-		const svgEl:d3.Selection<SVGSVGElement,any,SVGElement,any> = owner.svg();
+		const svgEl:d3.Selection<SVGSVGElement,any,SVGElement,any> = owner.svg;
+		const conf:Config = owner.config<Config>();
 
-		const margin:number = 10;
-		let Y:number = margin;
 
 		if(svgEl.select("g.toolbar").size()>0) return;
 
 		let legends:Array<LegendModel> = [];
-		const conf:Config = <Config>owner.config();
 
 
-		// buttons
-		let toolbarEl:d3.Selection<SVGGElement,any,SVGElement,any> = svgEl.append("g")
-			.attr("class","toolbar")
-			.attr("transform",`translate (${margin}, ${Y})`)
+		// root
+		let toolbarEl:d3.Selection<SVGGElement,any,SVGElement,any> = svgEl.append("g").attr("class","toolbar");
 
 		// button - zoom in 
 		toolbarEl.append("g")
@@ -70,6 +65,9 @@ export class Toolbar {
 		// legends
 		if(legends.length > 0) {
 
+			const margin:number = 10;
+			let Y:number = margin;
+
 			toolbarEl.append("g")
 				.attr("id","ac_btn_legend")
 				.attr("class","button")
@@ -90,7 +88,7 @@ export class Toolbar {
 
 
 			// g.legend  에 스크롤 가능한 레이어 추가
-			UI.appendScrollableLayer(margin, Y, owner.bounds(), legendEl, Toolbar.renderLegends, legends);
+			UI.appendScrollableLayer(margin, Y, owner.bounds, legendEl, Toolbar.renderLegends, legends);
 
 			// 닫기 버튼
 			legendEl.selectAll("g.outline").append("g")

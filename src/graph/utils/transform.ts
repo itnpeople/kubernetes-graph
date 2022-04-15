@@ -49,13 +49,10 @@ export class Transform {
 		return (this.k = ratio, this.transform());
 	}
 
-	shift(x:number,y:number):Transform {
-		return (this.x = x, this.y = y, this.transform());
-	}
-	shiftY(y:number):Transform {
+	translateY(y:number):Transform {
 		return (this.y = y, this.transform());
 	}
-	shiftX(x:number):Transform {
+	translateX(x:number):Transform {
 		return (this.x = x, this.transform());
 	}
 

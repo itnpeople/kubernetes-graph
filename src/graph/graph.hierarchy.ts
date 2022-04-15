@@ -3,7 +3,7 @@ import * as d3					from "d3";
 import * as d3Select			from "d3-selection";
 import {HierarchyModel as model}	from "@/components/graph/model/graph.model";
 import {Config}					from "@/components/graph/model/config.model";
-import {UI}						from "@/components/graph/utils/ui";
+import {UI, WH}				from "@/components/graph/utils/ui";
 import {GraphBase}				from "@/components/graph/graph.base";
 import "@/components/graph/graph.hierarchy.css";
 
@@ -18,7 +18,7 @@ export class HierarchyGraph extends GraphBase {
 	 * @param bounds 랜더링 영역 크기 (x,y,height,width)
 	 * @param conf 데이터 & 옵션
 	 */
-	public populate(outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>, bounds:DOMRect, conf:Config) {
+	public populate(outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>, bounds:WH, conf:Config) {
 		
 		if(!conf.data) return;
 
@@ -29,8 +29,7 @@ export class HierarchyGraph extends GraphBase {
 		if(conf.extends.hierarchy.scale.maxHeight > 0 && bounds.height > conf.extends.hierarchy.scale.maxHeight*conf.global.scale.ratio)  bounds.height = conf.extends.hierarchy.scale.maxHeight;
 
 		// svg > defs
-		const svgEl:d3Select.Selection<SVGSVGElement, any, SVGElement, any> = this.svg()
-		if(svgEl.select("defs").size() == 0) svgEl.append("defs").call(HierarchyGraph.renderDefs, conf);
+		if(this.svg.select("defs").size() == 0) this.svg.append("defs").call(HierarchyGraph.renderDefs, conf);
 
 		// data 가공
 		let data:Array<model.Node> = [];

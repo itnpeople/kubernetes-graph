@@ -1,130 +1,78 @@
+import * as d3		from "d3";
 import {Transform}	from "@/components/graph/utils/transform";
 import {Lang}		from "@/components/graph/utils/lang";
+import e from "express";
 
-export class Bounds {
-
+export class WH {
     height: number;
     width: number;
+}
+
+export class Bounds extends WH {
+
     x: number;
     y: number;
-	bottom: number;
-	right: number;
 
-	constructor(selection:d3.Selection<SVGGElement, any, Element, any>) {
-
-		let bounds:DOMRect
-		
-		if( selection.node() instanceof SVGGElement ) {
-
-			const transform:Transform = Transform.instance(selection.node()!)
-			this.x = transform.x;
-			this.y = transform.y;
-
-			bounds = (<SVGGElement>selection.node()!).getBBox();
-			this.width = bounds.width;
-			this.height = bounds.height;
-			this.bottom = bounds.y + bounds.height;
-			this.right = bounds.x + bounds.width;
+	constructor(el:d3.Selection<SVGGElement, any, Element, any>|HTMLElement) {
+		super();
+		if (el instanceof HTMLElement) {
+			const bounds:DOMRect = el.getBoundingClientRect();	//absolute-position
+			const selection = d3.select(el);
+			this.x	= bounds.x + Lang.toNumber(selection.style("padding-left"),0);
+			this.y	= bounds.y + Lang.toNumber(selection.style("padding-top"),0);
+			this.width	= bounds.right - Lang.toNumber(selection.style("padding-right"),0) - this.x;
+			this.height	= bounds.bottom - Lang.toNumber(selection.style("padding-bottom"),0) - this.y;
 		} else {
-			bounds = selection.node()!.getBoundingClientRect();
-			// padding 반영
-			this.x = bounds.left + Lang.toNumber(selection.style("padding-left"),0);
-			this.right = bounds.right - Lang.toNumber(selection.style("padding-right"),0);
-			this.y = bounds.top + Lang.toNumber(selection.style("padding-top"),0);
-			this.bottom = bounds.bottom - Lang.toNumber(selection.style("padding-bottom"),0);
-			this.width = this.right-this.x;
-			this.height = this.bottom - this.y;
+			const bounds:DOMRect = el.node()!.getBBox();	//relative-position
+			const transform:Transform = Transform.instance(el.node()!)
+			this.x	= transform.x;
+			this.y	= transform.y;
+			this.width	= bounds.width;
+			this.height	= bounds.height;
 		}
 
 	}
-}
 
+}
 
 export class UI {
 
-	/**
-	 * 주어진 element 의 부모 element 높이 맞추어 수직정렬
-	 * 
-	 */	
-	public static alignVertical(el:SVGGElement) {
-		
-		if (el ==null || el.parentElement == null) return 
-
-		const rect:DOMRect = el.getBoundingClientRect();
-		const rectParent:DOMRect = el.parentElement.getBoundingClientRect();
-
-		if(rect.height < rectParent.height) {
-			Transform.instance(el).shiftY((rectParent.height-rect.height)/2);
-		}
-
-	}
 
 	/**
-	 * 주어진 element 의 부모 element 너비 맞추어 수평정렬
+	 * align
 	 * 
-	 */	
-	public static alignHorizontal(el:SVGElement) {
-
-		if (el ==null || el.parentElement == null) return 
-
-		const rect:DOMRect = el.getBoundingClientRect();
-		const rectParent:DOMRect = el.parentElement.getBoundingClientRect();
-
-		if(rect.width < rectParent.width) {
-			Transform.instance(el).shiftX((rectParent.width-rect.width)/2);
-		}
-
-	}
-
-	/**
-	 * 같은 형재 element 들을 가운데 수평 정렬
-	 * 
-	 */	
-	public static alignHorizontals(els:Array<SVGElement>) { 
-
-		if(els.length < 1) return;
-		let maxWidth:number = 0;
-
-		els.forEach( (el:SVGElement) => {
-			const rect:DOMRect = el.getBoundingClientRect();
-			maxWidth = Math.max(rect.width+rect.left, maxWidth)
-		});
-
-		els.forEach( (el:SVGElement) => {
-			const rect:DOMRect = el.getBoundingClientRect();
-			if(rect.width < maxWidth) {
-				Transform.instance(el).shiftX((maxWidth-rect.width)/2);
-			}
-		});
-
-
-	}
-
+	 * @param el target element
+	 * @param horizontal
+	 * @param vertical
+	 * @param margin margin 반영
+	 */
 	public static align(el:SVGElement, horizontal:"none"|"left"|"right"|"center", vertical:"none"|"top"|"bottom"|"middle",  margin?: {left?:number, top?:number, right?:number,bottom?:number}) { 
 
 		if(!el || !el.parentElement) return
-		const bounds:DOMRect = el.parentElement.getBoundingClientRect();
+		const outBounds:DOMRect = el.parentElement.getBoundingClientRect();
+		const bounds:DOMRect = el.getBoundingClientRect();
 
 		let X:number=0, Y:number=0;
+		if(!margin) margin = {left:0, top:0, right:0, bottom:0}
 
 		if(horizontal == "right") {
-			X = bounds.width - el.getBoundingClientRect().width - ((margin && margin.right) ? margin.right: 0);
+			X = outBounds.width - bounds.width - ( margin.right ? margin.right: 0);
 		} else if(horizontal == "center") {
-			X = (bounds.width - el.getBoundingClientRect().width - ((margin && margin.right) ? margin.right: 0))/2;
+			X = (outBounds.width - bounds.width - (margin.right ? margin.right: 0))/2;
 		} else {
 			X = (margin && margin.left) ? margin.left: 0;
 		}
 
 		if(vertical == "bottom") {
-			Y = bounds.height - el.getBoundingClientRect().height - ((margin && margin.bottom) ? margin.bottom: 0) ;
+			Y = outBounds.height - bounds.height - (margin.bottom ? margin.bottom: 0) ;
 		} else if(vertical == "middle") {
-			Y = (bounds.height - el.getBoundingClientRect().height - ((margin && margin.bottom) ? margin.bottom: 0))/2;
+			Y = (outBounds.height - bounds.height - (margin.bottom ? margin.bottom: 0))/2;
 		} else {
-			Y = (margin && margin.top) ? margin.top: 0;
+			Y = margin.top ? margin.top: 0;
 		}
 
-		console.log(X,Y)
-		Transform.instance(el).translate(X,Y)
+		const k:number = Transform.instance(el.parentElement).k;	//calcuate parent elements's tranfrom-scale (ratio) 
+		Transform.instance(el).translate(X/k,Y/k)
 	}
 
 
@@ -237,7 +185,7 @@ export class UI {
 		}
 			
 
-		if(padding) Transform.instance(box.node()!).shift(padding.left,padding.top)
+		if(padding) Transform.instance(box.node()!).translate(padding.left,padding.top)
 		return box
 
 	}

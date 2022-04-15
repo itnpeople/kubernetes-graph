@@ -68,8 +68,8 @@ export class Config {
 			},
 			toolbar: {
 				visible: true,
-				align: { horizontal:"none", vertical:"none" },
-				margin: { top: 5, left: 5, right:5, bottom:5 }
+				align: { horizontal:"right", vertical:"top" },
+				margin: { top: 0, left: 0, right:0, bottom:0 }
 			},
 			padding: { top: 0, left: 0, right:0, bottom:0 },
 			scale: { ratio: 1, maxRatio: 0, minRatio: 0 }

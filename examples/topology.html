@@ -5,8 +5,7 @@
 	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
 	<title>Topology</title>
 	<style>
-		.graph {width:100%; height:800px;}
-		.graph > svg {border:1px solid #ccc;}
+		div.graph {width:100%; height:800px; padding:10px; border:1px solid #ccc;}
 	</style>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/fontawesome.css">
@@ -85,7 +84,11 @@
 		var end
 		var graph = new kore3lab.graph.TopologyGraph(".graph", {
 				global: {
-					scale: {ratio:1}
+					scale: {ratio:1},
+					toolbar: {
+						align: { horizontal: "left" }
+						//margin: { top: 10, left: 10, right:10, bottom: 10 }
+					}
 				},
 				extends: {
 					topology:{

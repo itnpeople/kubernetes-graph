@@ -3,6 +3,7 @@ import * as d3Force				from "d3-force";
 import {GraphBase}				from "@/components/graph/graph.base";
 import {Config}					from "@/components/graph/model/config.model";
 import {TopologyModel as model}	from "@/components/graph/model/graph.model"
+import {WH}						from "@/components/graph/utils/ui";
 import "@/components/graph/graph.topology.css";
 
 /**
@@ -24,16 +25,14 @@ import "@/components/graph/graph.topology.css";
  */
 export class TopologyGraph extends GraphBase {
 
-
 	/**
 	 * (abstract) 랜더링
 	 * @param data 토플로지를 위한 k8s 데이터 (model.K8s)
 	 */
-	public populate(outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>, bounds:DOMRect, conf:Config) {
+	public populate(outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>, bounds:WH, conf:Config) {
 
 		// svg > defs
-		const svgEl:d3Select.Selection<SVGSVGElement, any, SVGElement, any> = this.svg()
-		if(svgEl.select("defs").size() == 0) svgEl.append("defs").call(TopologyGraph.renderDefs, conf);
+		if(this.svg.select("defs").size() == 0) this.svg.append("defs").call(TopologyGraph.renderDefs, conf);
 
 
 		let data:model.Topology = conf.data;
@@ -139,12 +138,6 @@ export class TopologyGraph extends GraphBase {
 			.attr("x", -24)
 			.attr("y", 16)
 
-	}
-	/**
-	* 노드 랜더링
-	*/
-	private static renderToolbar(svg:d3Select.Selection<SVGElement,any,SVGElement,any>)  {
-	
 	}
 
 };	
