@@ -12,10 +12,12 @@ export abstract class GraphBase {
 	
 	private m_config:Config = new Config();
 	private m_container:HTMLElement;
+	private m_on:any;
 
 	public svg:d3.Selection<SVGSVGElement, any, SVGElement, any>;			//svg element
-	public outlineWrapEl:d3.Selection<SVGGElement,any,SVGElement,any>;		//g.outlineWrap
-	public outlineEl:d3.Selection<SVGGElement,any,SVGElement,any>;			//g.outlineWrap > g.outline
+	public outlineWrapEl:d3.Selection<SVGGElement,any,SVGElement,any>;		//svg > g.outlineWrap
+	public outlineEl:d3.Selection<SVGGElement,any,SVGElement,any>;			//svg > g.outlineWrap > g.outline
+	public toolbarEl:d3.Selection<SVGGElement,any,SVGElement,any>			//svg > g.toolbar
 	public zoomBehavior:d3.ZoomBehavior<any,any>;							//zoom
 	public bounds:Bounds;													//outline bounds
 	public initWH:WH														//initial width, height
@@ -29,10 +31,14 @@ export abstract class GraphBase {
 		return _ ? (this.m_container = d3.select<HTMLElement, any>(_).node()!, <T><unknown>this) : <T>this.m_container
 	}
 	public config<T extends (GraphBase|Config)>(_?:Config):T {
-		return _ ? (this.m_config = Lang.merge(this.m_config, _), <T><unknown>this) : <T>this.m_config;
+		return _ ? (this.m_config = new Config(), this.m_config = Lang.merge(this.m_config, _), <T><unknown>this) : <T>this.m_config;
 	}
 	public data(_?:any):GraphBase|any {
 		return _ ? (this.m_config.data = _, this) : this.m_config.data;
+	}
+	public on(name?:string, func?:(this: SVGElement, event: any, d: any) => void):GraphBase|any {
+		if (name && !this.m_on)  this.m_on = {};
+		return name ? (this.m_on[name] = func, this) : this.m_on;
 	}
 
 	/**
@@ -48,8 +54,8 @@ export abstract class GraphBase {
 
 		if(!this.m_container) return this;
 		const containerEl:d3.Selection<any, any, any, any> = d3.select(this.m_container);
-		const conf:Config = JSON.parse(JSON.stringify(this.config<Config>()));
-
+		const conf:Config = Lang.merge({}, this.config<Config>());
+		if (this.on()) conf.on = Lang.merge(conf.on, this.on());
 
 		// svg
 		let svg:d3.Selection<SVGSVGElement, any, SVGElement, any> = containerEl.select<SVGSVGElement>("svg");
@@ -68,7 +74,6 @@ export abstract class GraphBase {
 			this.outlineWrapEl.append("rect").attr("class","background").attr("fill","transparent").attr("width",bounds.width).attr("height",bounds.height);
 			this.initWH = {width:bounds.width, height:bounds.height};
 		}
-			this.resize();
 
 		// svg > g.outlineWrapEl > g.outline (zoom 영역, 그래프 랜더링 영역)
 		this.outlineEl = this.outlineWrapEl.append("g").attr("class","outline");
@@ -77,14 +82,14 @@ export abstract class GraphBase {
 
 
 		// populate 
-		this.populate(this.outlineEl, Object.assign({}, this.initWH), JSON.parse(JSON.stringify(conf)));
+		if(conf.data) this.populate(this.outlineEl, Object.assign({}, this.initWH), conf);
 
 		// g.outline align & bounds
 		UI.align(this.outlineEl.node()!, conf.global.align.horizontal, conf.global.align.vertical);
 		this.bounds = new Bounds(this.outlineEl);
 
 		// Toolbar
-		Toolbar.render(this);
+		this.toolbarEl = Toolbar.render(this);
 
 		// ZOOM Behavior
 		this.zoomBehavior = d3.zoom().on("zoom", (event)=> { this.outlineEl.attr("transform", event.transform); });
@@ -101,6 +106,7 @@ export abstract class GraphBase {
 		}
 
 		// window resize event
+		this.resize();
 		if(isOutlineWrap) d3.select(window).on('resize.updatesvg', () => { this.resize(); } );
 
 		return this;
@@ -133,7 +139,7 @@ export abstract class GraphBase {
 		else if(this.initWH.height != bounds.height) k = bounds.height/this.initWH.height;
 
 		Transform.instance(this.outlineWrapEl.node()!).scale(k)
-		UI.align(<SVGElement>this.svg.select("g.toolbar").node(), conf.global.toolbar.align.horizontal, conf.global.toolbar.align.vertical, conf.global.toolbar.margin);
+		UI.align(this.toolbarEl.node()!, conf.global.toolbar.align.horizontal, conf.global.toolbar.align.vertical, conf.global.toolbar.margin);
 
 	}
 

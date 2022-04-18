@@ -31,6 +31,7 @@
 							<option value="" selected>default</option>
 						</select>
 					</div>
+					<div class="col-sm" id="output"></div>
 				</div>
 			</div>
 			<div class="col-sm-1">
@@ -87,7 +88,6 @@
 					scale: {ratio:1},
 					toolbar: {
 						align: { horizontal: "left" }
-						//margin: { top: 10, left: 10, right:10, bottom: 10 }
 					}
 				},
 				extends: {
@@ -101,7 +101,14 @@
 						}
 					}
 				}
-			});
+			})
+			.on("nodeclick", (e,d)=> { 
+				if(d.namespace)
+					$("#output").html(`<b>${d.name}&nbsp;&nbsp;</b>(namespace:<em>${d.namespace}</em>&nbsp;&nbsp;kind:<em>${d.kind}</em>)`) 
+				else
+					$("#output").html(`<b>${d.name}&nbsp;&nbsp;</b>(kind:<em>${d.kind}</em>)`) 
+			})
+
 		$("#txtConfig").text( JSON.stringify(graph.config(), null, 4));
 
 		var btnQuery = $("#btnQuery");

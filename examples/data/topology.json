@@ -2,6 +2,7 @@
     "nodes": [
         {
             "id": "ad9d8fff-a560-40c9-a095-b30578b0316d",
+            "namespace": "kube-system",
             "name": "calico-kube-controllers-79cc8cf9db-4wg4h",
             "kind": "pod",
             "group": "apps-113",
@@ -16,6 +17,7 @@
         },
         {
             "id": "179ffe4e-e7d8-4a1e-8c7b-368411e7b966",
+            "namespace": "kube-system",
             "name": "calico-node-5rnnd",
             "kind": "pod",
             "group": "apps-117",
@@ -30,6 +32,7 @@
         },
         {
             "id": "840031ab-1566-4632-a38b-959673c95ca2",
+            "namespace": "kube-system",
             "name": "calico-node-7gxcs",
             "kind": "pod",
             "group": "apps-115",
@@ -44,6 +47,7 @@
         },
         {
             "id": "7eea3e90-1a79-4c6f-bc5c-35552caa914a",
+            "namespace": "kube-system",
             "name": "calico-node-84hdx",
             "kind": "pod",
             "group": "apps-114",
@@ -58,6 +62,7 @@
         },
         {
             "id": "f46a7722-95ad-45ae-a8c5-ad18a372b4af",
+            "namespace": "kube-system",
             "name": "calico-node-cpd9q",
             "kind": "pod",
             "group": "apps-113",
@@ -72,6 +77,7 @@
         },
         {
             "id": "af958467-b7ed-4824-aba5-c2aa3c9cb43e",
+            "namespace": "kube-system",
             "name": "calico-node-dnrhd",
             "kind": "pod",
             "group": "apps-116",
@@ -86,6 +92,7 @@
         },
         {
             "id": "98d8c128-fa81-4bad-9351-f911d22c1386",
+            "namespace": "kube-system",
             "name": "calico-node-pl6vj",
             "kind": "pod",
             "group": "apps-118",
@@ -100,6 +107,7 @@
         },
         {
             "id": "3f47a146-461a-4a8e-8df7-12a566192024",
+            "namespace": "kube-system",
             "name": "calico-node-z95ff",
             "kind": "pod",
             "group": "apps-gpu-v100",
@@ -114,6 +122,7 @@
         },
         {
             "id": "159fc47d-49cc-4077-9723-0c420d2c3a02",
+            "namespace": "kube-system",
             "name": "coredns-6bf958bbd5-g6sx2",
             "kind": "pod",
             "group": "apps-116",
@@ -128,6 +137,7 @@
         },
         {
             "id": "f5ee7a55-a634-4102-a7d6-ba2508d59289",
+            "namespace": "kube-system",
             "name": "coredns-6bf958bbd5-hzpmq",
             "kind": "pod",
             "group": "apps-113",
@@ -142,6 +152,7 @@
         },
         {
             "id": "2bd56876-6e68-4d00-9c4b-349c2a080fb2",
+            "namespace": "kube-system",
             "name": "haproxy-apps-113",
             "kind": "pod",
             "group": "apps-113",
@@ -156,6 +167,7 @@
         },
         {
             "id": "0c5a51ea-0d51-4c09-b58c-ff9008140a70",
+            "namespace": "kube-system",
             "name": "haproxy-apps-114",
             "kind": "pod",
             "group": "apps-114",
@@ -170,6 +182,7 @@
         },
         {
             "id": "7d6814b2-2a3d-4ce2-b154-303607cbf971",
+            "namespace": "kube-system",
             "name": "haproxy-apps-115",
             "kind": "pod",
             "group": "apps-115",
@@ -184,6 +197,7 @@
         },
         {
             "id": "b87ab4a0-8d72-454e-95a2-4569fc867e6f",
+            "namespace": "kube-system",
             "name": "haproxy-apps-116",
             "kind": "pod",
             "group": "apps-116",
@@ -198,6 +212,7 @@
         },
         {
             "id": "98d35cab-b1bc-4a96-b556-05c93291a6eb",
+            "namespace": "kube-system",
             "name": "haproxy-apps-117",
             "kind": "pod",
             "group": "apps-117",
@@ -212,6 +227,7 @@
         },
         {
             "id": "786791de-e3aa-4c8a-a3f0-73fc1d31c17e",
+            "namespace": "kube-system",
             "name": "haproxy-apps-118",
             "kind": "pod",
             "group": "apps-118",
@@ -226,6 +242,7 @@
         },
         {
             "id": "87eaca10-d206-4a16-90a7-11ad55aca560",
+            "namespace": "kube-system",
             "name": "kube-apiserver-apps-116",
             "kind": "pod",
             "group": "apps-116",
@@ -240,6 +257,7 @@
         },
         {
             "id": "f9b4b1fd-5b79-4be8-be52-29305bf70e36",
+            "namespace": "kube-system",
             "name": "kube-apiserver-apps-117",
             "kind": "pod",
             "group": "apps-117",
@@ -254,6 +272,7 @@
         },
         {
             "id": "f051cbfc-270b-4c21-b12f-eda8a05814bd",
+            "namespace": "kube-system",
             "name": "kube-apiserver-apps-118",
             "kind": "pod",
             "group": "apps-118",
@@ -268,6 +287,7 @@
         },
         {
             "id": "daee2d93-b50e-4f5b-bebe-4d84604b0469",
+            "namespace": "kube-system",
             "name": "kube-controller-manager-apps-116",
             "kind": "pod",
             "group": "apps-116",
@@ -282,6 +302,7 @@
         },
         {
             "id": "41c24e6e-0575-49d4-9f6a-0853c41a31b1",
+            "namespace": "kube-system",
             "name": "kube-controller-manager-apps-117",
             "kind": "pod",
             "group": "apps-117",
@@ -289,6 +310,7 @@
         },
         {
             "id": "docker://fd0acd52660e31287c70e7c2332555e2c28a66638621353f4b00c98a9f3f4d75",
+            "namespace": "kube-system",
             "name": "gcr.io/google_containers/kube-controller-manager:v1.15.10",
             "kind": "container",
             "group": "apps-117",
@@ -296,6 +318,7 @@
         },
         {
             "id": "bdec1d87-6cb4-4332-98a1-5a85932b9aa0",
+            "namespace": "kube-system",
             "name": "kube-controller-manager-apps-118",
             "kind": "pod",
             "group": "apps-118",
@@ -310,6 +333,7 @@
         },
         {
             "id": "d040ec91-b111-445e-aa01-2f385ef7f120",
+            "namespace": "kube-system",
             "name": "kube-proxy-22cq4",
             "kind": "pod",
             "group": "apps-gpu-v100",
@@ -338,6 +362,7 @@
         },
         {
             "id": "469a3d84-e646-4e06-a83d-1e800782fe86",
+            "namespace": "kube-system",
             "name": "kube-proxy-gmdcc",
             "kind": "pod",
             "group": "apps-115",
@@ -366,6 +391,7 @@
         },
         {
             "id": "984236a4-adb3-4e70-a870-0ba0df6b7939",
+            "namespace": "kube-system",
             "name": "kube-proxy-jbshm",
             "kind": "pod",
             "group": "apps-113",
@@ -380,6 +406,7 @@
         },
         {
             "id": "69681fb8-a13f-4a7d-9a65-b5497f172b31",
+            "namespace": "kube-system",
             "name": "kube-proxy-lbwnp",
             "kind": "pod",
             "group": "apps-117",
@@ -387,6 +414,7 @@
         },
         {
             "id": "docker://b9190298628aa787381f0a989f3bb4e6973f53088176e446b1cefb5911f90506",
+            "namespace": "kube-system",
             "name": "gcr.io/google_containers/kube-proxy:v1.15.10",
             "kind": "container",
             "group": "apps-117",
@@ -394,6 +422,7 @@
         },
         {
             "id": "15a83fc9-6d30-45b1-b72a-56d6e0c6e4a9",
+            "namespace": "kube-system",
             "name": "kube-proxy-pdvrb",
             "kind": "pod",
             "group": "apps-114",
@@ -408,6 +437,7 @@
         },
         {
             "id": "3a11daed-b860-43bf-934e-6d83ae95c113",
+            "namespace": "kube-system",
             "name": "kube-scheduler-apps-116",
             "kind": "pod",
             "group": "apps-116",
@@ -422,6 +452,7 @@
         },
         {
             "id": "c172c95c-478b-45bd-8d00-41b815e9b9ce",
+            "namespace": "kube-system",
             "name": "kube-scheduler-apps-117",
             "kind": "pod",
             "group": "apps-117",
@@ -436,6 +467,7 @@
         },
         {
             "id": "2fb862b1-4834-44c3-8642-eddd30cb4800",
+            "namespace": "kube-system",
             "name": "kube-scheduler-apps-118",
             "kind": "pod",
             "group": "apps-118",
@@ -450,6 +482,7 @@
         },
         {
             "id": "cf775490-731f-4585-9ba5-e8ec870ddbc6",
+            "namespace": "kube-system",
             "name": "metrics-server-8b4fdb7d8-65hpj",
             "kind": "pod",
             "group": "apps-116",
@@ -464,6 +497,7 @@
         },
         {
             "id": "d00a575f-63c4-4f7d-87c6-0c4bf3483dd3",
+            "namespace": "kube-system",
             "name": "metrics-server-8b4fdb7d8-s9rsp",
             "kind": "pod",
             "group": "apps-113",
@@ -478,6 +512,7 @@
         },
         {
             "id": "93370ea6-ede6-4a69-b60a-cf4e3470194f",
+            "namespace": "kube-system",
             "name": "nfd-master-568ccd46d-qw6fd",
             "kind": "pod",
             "group": "apps-116",
@@ -492,6 +527,7 @@
         },
         {
             "id": "10489abb-3d90-4452-9d23-4c14318bad14",
+            "namespace": "kube-system",
             "name": "nfd-worker-8pqls",
             "kind": "pod",
             "group": "apps-113",
@@ -506,6 +542,7 @@
         },
         {
             "id": "08ebb4f6-585a-47a2-a00a-e63ea5758fb4",
+            "namespace": "kube-system",
             "name": "nfd-worker-b2g29",
             "kind": "pod",
             "group": "apps-117",
@@ -520,6 +557,7 @@
         },
         {
             "id": "6d52a96c-be0c-4608-80d4-0e63d3d27c18",
+            "namespace": "kube-system",
             "name": "nfd-worker-dt5x9",
             "kind": "pod",
             "group": "apps-gpu-v100",
@@ -548,6 +586,7 @@
         },
         {
             "id": "a49069cd-25b7-4773-af24-def7eef26d78",
+            "namespace": "kube-system",
             "name": "nfd-worker-kcj4c",
             "kind": "pod",
             "group": "apps-118",
@@ -562,6 +601,7 @@
         },
         {
             "id": "2625f82c-6c87-42ba-963b-91a024b8ecc5",
+            "namespace": "kube-system",
             "name": "nfd-worker-n5zvt",
             "kind": "pod",
             "group": "apps-116",
@@ -576,6 +616,7 @@
         },
         {
             "id": "c53d6b1a-babe-4f10-85a9-168a4573ad60",
+            "namespace": "kube-system",
             "name": "nfd-worker-vqv8r",
             "kind": "pod",
             "group": "apps-114",
@@ -590,6 +631,7 @@
         },
         {
             "id": "92d68da1-7afe-4b6e-b1f7-e7da500ebacf",
+            "namespace": "kube-system",
             "name": "nvidia-gpu-gpu-feature-discovery-vlmx6",
             "kind": "pod",
             "group": "apps-gpu-v100",
@@ -604,6 +646,7 @@
         },
         {
             "id": "09414a2d-ca4a-406e-ab0e-2d0f2f2c6f72",
+            "namespace": "kube-system",
             "name": "nvidia-gpu-nvidia-device-plugin-xvks6",
             "kind": "pod",
             "group": "apps-gpu-v100",

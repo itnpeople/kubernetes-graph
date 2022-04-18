@@ -31,6 +31,7 @@
 							<option value="" selected>default</option>
 						</select>
 					</div>
+					<div class="col-sm" id="output"></div>
 				</div>
 			</div>
 			<div class="col-sm-1">
@@ -85,10 +86,12 @@
 				},
 				extends: {
 					hierarchy: {
-						scale: { minWidth: 600, maxWidth: 1000 }	//min-width, max-width 
+						scale: { minWidth: 600, maxWidth: 1000 },	//min-width, max-width 
 					}
 				}
-			});
+				
+			})
+			.on("nodeclick", (e,d)=> { $("#output").html(`<b>${d.data.name}&nbsp;&nbsp;</b>(namespace:<em>${d.data.namespace}</em>&nbsp;&nbsp;kind:<em>${d.data.kind}</em>)`) })
 
 		$("#txtConfig").text( JSON.stringify(graph.config(), null, 4));
 
@@ -98,7 +101,6 @@
 
 		// 조회 버튼 
 		btnQuery.click( (e) => {
-
 			var cluster = $("#cboCluster").val()
 			var url = cluster? `/api/clusters/${cluster}/workloads`: "/data/hierarchy.json"
 			$.ajax({
@@ -106,7 +108,8 @@
 				success: function(data) {
 					graph
 						.config(JSON.parse($("#txtConfig").val()))
-						.data(data).render();
+						.data(data)
+						.render();
 				},
 				error:function(request,status, error){
 					alert(`<${request.status}>\n${error}`);

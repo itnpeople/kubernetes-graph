@@ -49,12 +49,13 @@ export class TopologyGraph extends GraphBase {
 
 		// 노드 추가
 		if(!data.nodes) return;
-		let nodes:d3Select.Selection<SVGGElement,any,SVGElement,any> = outlineEl.selectAll("g.node")
+		let nodeEl:d3Select.Selection<SVGGElement,any,SVGElement,any> = outlineEl.selectAll("g.node")
 			.data(data.nodes).enter()
 				.append("g")
-				.attr("class","node")
-				// .attr("id", d=>d.id)
-				.call(TopologyGraph.renderNode);
+				.attr("class", (conf.on && conf.on.nodeclick) ? "node click": "node")
+				.call(TopologyGraph.renderNode, conf);
+
+		if(conf.on && conf.on.nodeclick) nodeEl.on("click", conf.on.nodeclick);
 
 		// 좌표 Simulation
 		let forceLink:d3Force.ForceLink<d3Force.SimulationNodeDatum, d3Force.SimulationLinkDatum<d3Force.SimulationNodeDatum>>;
@@ -79,7 +80,7 @@ export class TopologyGraph extends GraphBase {
 
 		// tick
 		nodeSimulation.on("tick", () => {
-			nodes.attr("transform", d=> { return `translate(${d.x},${d.y})`; });
+			nodeEl.attr("transform", d=> { return `translate(${d.x},${d.y})`; });
 
 			linksEl.attr("x1", d=>d.source.x)
 				.attr("y1", d=>d.source.y)
@@ -120,7 +121,7 @@ export class TopologyGraph extends GraphBase {
 	/**
 	* 노드 랜더링
 	*/
-	private static renderNode(nodes:d3Select.Selection<SVGGElement,any,SVGElement,any>)  {
+	private static renderNode(nodes:d3Select.Selection<SVGGElement,any,SVGElement,any>, conf:Config)  {
 
 		nodes
 			.append("use")
@@ -130,6 +131,7 @@ export class TopologyGraph extends GraphBase {
 			.attr("x", (d:model.Node) => {return (d.kind==model.NodeKind.NODE||d.kind==model.NodeKind.CLUSTER?-20:-12)})
 			.attr("y", (d:model.Node) => {return (d.kind==model.NodeKind.NODE||d.kind==model.NodeKind.CLUSTER?-20:-12)})
 
+
 		// 라벨 Render
 		nodes.append("text")
 			.attr("class", "label")
@@ -137,6 +139,7 @@ export class TopologyGraph extends GraphBase {
 			// .text(d => d.name)
 			.attr("x", -24)
 			.attr("y", 16)
+
 
 	}
 

@@ -11,21 +11,24 @@ export namespace HierarchyModel {
 	export class Node {
 		name:string
 		kind:string
+		namespace?:string
 		depth:number
 		ownerReference?:Node 
 		children:Array<Node>
 
 		constructor(kind?:string, metadata?:k8s.V1ObjectMeta) {
 			if(metadata) {
-				if(kind) this.kind = kind
+				this.kind = kind!
 				this.name = metadata.name!
+				this.namespace = metadata.namespace
 				if(metadata.ownerReferences) {
 					this.ownerReference = new Node()
 					this.ownerReference.kind = metadata.ownerReferences[0].kind
+					this.ownerReference.namespace = metadata.namespace
 					this.ownerReference.name = metadata.ownerReferences[0].name
 				}
 			} else {
-				this.name = kind!
+				if(kind) this.name = kind;	//argument.lenth==1 then "name"
 			}
 			this.children  = [];
 		}

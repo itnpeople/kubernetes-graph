@@ -1,6 +1,4 @@
-/**
-* 설정정보
-*/
+import {Lang}	from "@/components/graph/utils/lang";
 
 export class Config {
 	// -- DEFINE ---------
@@ -29,7 +27,7 @@ export class Config {
 			group: {
 				spacing:number
 				title: {
-					visible:boolean
+					display:"always"|"none"|"has"
 					spacing:number
 				}
 				box: {
@@ -42,7 +40,7 @@ export class Config {
 							height:number
 						}
 					}
-				},
+				}
 			}
 		}
 		topology: {
@@ -58,6 +56,10 @@ export class Config {
 			}
 		}
 	}
+	on?: {
+		nodeclick?:(this: SVGElement, event: any, d: any) => void
+	}
+	//merge: (conf:Config)=> Config
 	// -- 생성자 - Default 값 ---------
 	constructor() {
 		this.global = {
@@ -80,7 +82,7 @@ export class Config {
 				group: {
 					spacing:25,											//group간 간격
 					title: {
-						visible: true,									//group title visible/hidden
+						display: "has",									//group title visible/hidden
 						spacing: 10										//group title과 box 사이 간격
 					},
 					box: {
@@ -92,13 +94,21 @@ export class Config {
 							node : { height: 30 }						//노드 높이
 						}
 					},
-				},
+				}
 			},
 			topology: {
 				tick: { skip:10 },
 				collision: { radius:60 },
 				simulation: { alphaDecay:0.006, onEnd: undefined }
 			}
-		}
+		};
+		//this.merge = (conf:Config) => {
+		//	return Lang.merge(this, conf)
+		//}
+
 	}
+	//public	merge(conf:Config) {
+	//	return Lang.merge(this, conf)
+	//}
+
 }
