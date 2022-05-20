@@ -22,11 +22,12 @@ export class HierarchyGraph extends GraphBase {
 	 */
 	public populate(outlineEl:d3Select.Selection<SVGGElement,any,SVGElement,any>, bounds:WH, conf:Config) {
 		
-		// Set min,max width,height options
-		if(conf.extends.hierarchy.scale.minWidth > 0 && bounds.width < conf.extends.hierarchy.scale.minWidth*conf.global.scale.ratio)  bounds.width = conf.extends.hierarchy.scale.minWidth;
-		if(conf.extends.hierarchy.scale.maxWidth > 0 && bounds.width > conf.extends.hierarchy.scale.maxWidth*conf.global.scale.ratio)  bounds.width = conf.extends.hierarchy.scale.maxWidth;
-		if(conf.extends.hierarchy.scale.minHeight > 0 && bounds.height < conf.extends.hierarchy.scale.minHeight*conf.global.scale.ratio)  bounds.height = conf.extends.hierarchy.scale.minHeight;
-		if(conf.extends.hierarchy.scale.maxHeight > 0 && bounds.height > conf.extends.hierarchy.scale.maxHeight*conf.global.scale.ratio)  bounds.height = conf.extends.hierarchy.scale.maxHeight;
+
+		// Set width
+		let width:number = bounds.width;
+		if(conf.extends.hierarchy.scale.minWidth > 0 && bounds.width < conf.extends.hierarchy.scale.minWidth*conf.global.scale.ratio)  width = conf.extends.hierarchy.scale.minWidth;
+		if(conf.extends.hierarchy.scale.maxWidth > 0 && bounds.width > conf.extends.hierarchy.scale.maxWidth*conf.global.scale.ratio)  width = conf.extends.hierarchy.scale.maxWidth;
+		width -= (conf.extends.hierarchy.group.box.border.width*2);	 // border
 
 		// svg > defs
 		if(this.svg.select("defs").size() == 0) this.svg.append("defs").call(HierarchyGraph.renderDefs, conf);
@@ -53,12 +54,11 @@ export class HierarchyGraph extends GraphBase {
 			data.push(root)
 		});
 		// rendering groups
-		// svg > g.graph > g.outline > g.outlineWrap > g.group
+		// svg > g.graph > g.outlineWrap > g.outline > g.group
 		//		> text
 		//      > g.boxWrap > g.box > g.tree
-		let gH = 0;
+		let gY = 0;
 		const padding = conf.extends.hierarchy.group.box.padding;
-		const width:number = bounds.width - (conf.extends.hierarchy.group.box.border.width*2) //line width
 		const treeWidth:number = width - (padding.left + padding.right);
 		const nodeHeight:number = conf.extends.hierarchy.group.box.tree.node.height;
 
@@ -86,14 +86,15 @@ export class HierarchyGraph extends GraphBase {
 				}, width, padding, conf.extends.hierarchy.group.box.background, conf.extends.hierarchy.group.box.border);
 
 			}
-			// + move Y
-			g.attr("transform", `translate(0,${gH})`)
-			if(d.children.length > 0) gH += g.node()!.getBBox().height + conf.extends.hierarchy.group.spacing;
+			// + move XY
+			g.attr("transform", `translate(${(bounds.width-width)/2},${gY})`)
+			if(d.children.length > 0) gY += g.node()!.getBBox().height + conf.extends.hierarchy.group.spacing;
 		});
 
 		// toolbar aline default 값 정의 -  "none"(사용자 지정 X)이면
 		if(conf.global.toolbar.align.horizontal == "none") conf.global.toolbar.align.horizontal = "right";
 		if(conf.global.toolbar.align.vertical == "none") conf.global.toolbar.align.vertical = "top";
+
 
 	}
 

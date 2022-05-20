@@ -1,7 +1,7 @@
 import * as d3		from "d3";
 import {Transform}	from "@/components/graph/utils/transform";
 import {Lang}		from "@/components/graph/utils/lang";
-import e from "express";
+import { select } from "d3";
 
 export class WH {
     height: number;
@@ -59,6 +59,7 @@ export class UI {
 			X = outBounds.width - bounds.width - ( margin.right ? margin.right: 0);
 		} else if(horizontal == "center") {
 			X = (outBounds.width - bounds.width - (margin.right ? margin.right: 0))/2;
+
 		} else {
 			X = (margin && margin.left) ? margin.left: 0;
 		}
@@ -73,6 +74,25 @@ export class UI {
 
 		const k:number = Transform.instance(el.parentElement).k;	//calcuate parent elements's tranfrom-scale (ratio) 
 		Transform.instance(el).translate(X/k,Y/k)
+	}
+
+	
+
+	public static align2(selection: d3.Selection<SVGGElement, any, SVGElement, any>, horizontal:"none"|"left"|"right"|"center", vertical:"none"|"top"|"bottom"|"middle",  margin?: {left?:number, top?:number, right?:number,bottom?:number}): d3.ZoomTransform{ 
+
+		const el:SVGElement = selection.node()!
+		let transform:d3.ZoomTransform = d3.zoomTransform(el);
+		if(!el || !el.parentElement) return transform
+
+		const outline:DOMRect = el.parentElement.getBoundingClientRect();
+		const inline:DOMRect = el.getBoundingClientRect();
+
+
+		let X = outline.width > inline.width ? inline.x + (outline.width - inline.width)/2 : 0;
+		let Y = outline.height > inline.height ? -inline.y + (outline.height - inline.height)/2: -inline.y;
+
+		const k:number = Transform.instance(el.parentElement).k;	//calcuate parent elements's tranfrom-scale (ratio) 
+		return transform.translate(X/k,Y/k);
 	}
 
 

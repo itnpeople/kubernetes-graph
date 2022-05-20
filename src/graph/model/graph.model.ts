@@ -1,12 +1,16 @@
 import * as d3Force			from "d3-force";
-import * as d3Hierarchy		from "d3-hierarchy";
-import * as k8s				from "@kubernetes/client-node"
 
 /** 
 */
 export namespace HierarchyModel {
 
 	export class Hierarchy extends Map<string, Array<Node>>{}
+
+	export class Metadata {
+		name:string
+		namespace?:string
+		ownerReferences?:Array<Node>
+	}
 
 	export class Node {
 		name:string
@@ -16,7 +20,7 @@ export namespace HierarchyModel {
 		ownerReference?:Node 
 		children:Array<Node>
 
-		constructor(kind?:string, metadata?:k8s.V1ObjectMeta) {
+		constructor(kind?:string, metadata?:Metadata) {
 			if(metadata) {
 				this.kind = kind!
 				this.name = metadata.name!

@@ -1,4 +1,4 @@
-import {Lang as lang}	from "../utils/lang";
+import {Lang as lang}	from "@/components/graph/utils/lang";
 
 export class Transform {
 
@@ -62,7 +62,8 @@ export class Transform {
 	}
 
 	private transform():Transform {
-		return this._element ? (this._element.setAttribute("transform",	this.toString()), this): this;
+		this._element ? (this._element.setAttribute("transform",	this.toString()), this): this;
+		return this;
 	}
 
 

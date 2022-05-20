@@ -4,10 +4,6 @@ export class Config {
 	// -- DEFINE ---------
 	global:{
 		//graph:"topology"|"hierarchy"
-		align: {
-			vertical: "none"|"middle"
-			horizontal: "none"|"center"
-		}
 		padding: { top:number, left:number, right:number, bottom:number }
 		toolbar: {
 			visible:boolean
@@ -22,7 +18,7 @@ export class Config {
 	extends: {
 		hierarchy: {
 			scale: {
-				minWidth:number, minHeight:number, maxWidth:number, maxHeight:number
+				minWidth:number, maxWidth:number
 			}
 			group: {
 				spacing:number
@@ -64,21 +60,17 @@ export class Config {
 	constructor() {
 		this.global = {
 			//graph:"topology",
-			align: {
-				vertical: "none",
-				horizontal: "none"	
-			},
 			toolbar: {
 				visible: true,
 				align: { horizontal:"right", vertical:"top" },
 				margin: { top: 0, left: 0, right:0, bottom:0 }
 			},
 			padding: { top: 0, left: 0, right:0, bottom:0 },
-			scale: { ratio: 1, maxRatio: 0, minRatio: 0 }
+			scale: { ratio: 1, minRatio: 0.1, maxRatio: 10 }
 		};
 		this.extends = {
 			hierarchy: {
-				scale: { minWidth: 0, minHeight: 0, maxWidth:0, maxHeight:0 },
+				scale: { minWidth: 0, maxWidth:0 },
 				group: {
 					spacing:25,											//group간 간격
 					title: {

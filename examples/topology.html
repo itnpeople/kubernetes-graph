@@ -79,35 +79,32 @@
 			}
 		});
 
-
 		// 그래프 정의
-		var start = new Date();
-		var end
 		var graph = new kore3lab.graph.TopologyGraph(".graph", {
-				global: {
-					scale: {ratio:1},
-					toolbar: {
-						align: { horizontal: "left" }
-					}
-				},
-				extends: {
-					topology:{
-						simulation: {
-							alphaDecay:0.3,
-							onEnd: ()=> {
-								end = new Date()
-								console.log(end - start)
-							}
+			global: {
+				scale: {ratio:1},
+				toolbar: {
+					align: { horizontal: "left" }
+				}
+			},
+			extends: {
+				topology:{
+					simulation: {
+						alphaDecay:0.3,
+						onEnd: ()=> {
+							end = new Date()
+							console.log(end - start)
 						}
 					}
 				}
-			})
-			.on("nodeclick", (e,d)=> { 
-				if(d.namespace)
-					$("#output").html(`<b>${d.name}&nbsp;&nbsp;</b>(namespace:<em>${d.namespace}</em>&nbsp;&nbsp;kind:<em>${d.kind}</em>)`) 
-				else
-					$("#output").html(`<b>${d.name}&nbsp;&nbsp;</b>(kind:<em>${d.kind}</em>)`) 
-			})
+			}
+		})
+		.on("nodeclick", (e,d)=> { 
+			if(d.namespace)
+				$("#output").html(`<b>${d.name}&nbsp;&nbsp;</b>(namespace:<em>${d.namespace}</em>&nbsp;&nbsp;kind:<em>${d.kind}</em>)`) 
+			else
+				$("#output").html(`<b>${d.name}&nbsp;&nbsp;</b>(kind:<em>${d.kind}</em>)`) 
+		})
 
 		$("#txtConfig").text( JSON.stringify(graph.config(), null, 4));
 
@@ -123,9 +120,17 @@
 			$.ajax({
 				url: url,
 				success: function(data) {
-					graph
-						.config(JSON.parse($("#txtConfig").val()))
-						.data(data).render();
+					var start = new Date();
+					var end
+					graph.on("nodeclick", (e,d)=> { 
+						if(d.namespace)
+							$("#output").html(`<b>${d.name}&nbsp;&nbsp;</b>(namespace:<em>${d.namespace}</em>&nbsp;&nbsp;kind:<em>${d.kind}</em>)`) 
+						else
+							$("#output").html(`<b>${d.name}&nbsp;&nbsp;</b>(kind:<em>${d.kind}</em>)`) 
+					})
+					.config(JSON.parse($("#txtConfig").val()))
+					.data(data)
+					.render();
 				},
 				error:function(request,status){
         			alert(`<${request.status}>\n${request.responseText}`);

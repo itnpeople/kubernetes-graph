@@ -3,7 +3,7 @@ import * as d3Force				from "d3-force";
 import {GraphBase}				from "@/components/graph/graph.base";
 import {Config}					from "@/components/graph/model/config.model";
 import {TopologyModel as model}	from "@/components/graph/model/graph.model"
-import {WH}						from "@/components/graph/utils/ui";
+import {WH, Bounds}				from "@/components/graph/utils/ui";
 import "@/components/graph/graph.topology.css";
 
 /**
@@ -77,7 +77,6 @@ export class TopologyGraph extends GraphBase {
 			.force("center", d3Force.forceCenter(bounds.width/2/conf.global.scale.ratio, bounds.height/2/conf.global.scale.ratio));
 
 
-
 		// tick
 		nodeSimulation.on("tick", () => {
 			nodeEl.attr("transform", d=> { return `translate(${d.x},${d.y})`; });
@@ -90,6 +89,7 @@ export class TopologyGraph extends GraphBase {
 
 		// onEnd 이벤트
 		if (conf.extends.topology.simulation.onEnd && typeof conf.extends.topology.simulation.onEnd == "function") nodeSimulation.on("end", conf.extends.topology.simulation.onEnd);
+
 		
 	}
 
