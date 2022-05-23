@@ -20,7 +20,7 @@ export namespace HierarchyModel {
 		ownerReference?:Node 
 		children:Array<Node>
 
-		constructor(kind?:string, metadata?:Metadata) {
+		constructor(kind?:string, metadata?:any) {
 			if(metadata) {
 				this.kind = kind!
 				this.name = metadata.name!

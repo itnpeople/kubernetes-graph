@@ -81,15 +81,11 @@
 
 		// 그래프 정의
 		var graph = new kore3lab.graph.HierarchyGraph(".graph", {
-				global: {
-					align: { horizontal:"center" },				//수평정렬
-				},
 				extends: {
 					hierarchy: {
 						scale: { minWidth: 600, maxWidth: 1000 },	//min-width, max-width 
 					}
 				}
-				
 			})
 			.on("nodeclick", (e,d)=> { $("#output").html(`<b>${d.data.name}&nbsp;&nbsp;</b>(namespace:<em>${d.data.namespace}</em>&nbsp;&nbsp;kind:<em>${d.data.kind}</em>)`) })
 

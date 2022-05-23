@@ -120,8 +120,10 @@ export abstract class GraphBase {
 		if(!d3.select(window).on("resize.updatesvg")) d3.select(window).on("resize.updatesvg", resize );
 
 		// toolbar
-		this.toolbarEl = Toolbar.render(this);
-		UI.align(this.toolbarEl.node()!, conf.global.toolbar.align.horizontal, conf.global.toolbar.align.vertical);
+		if (conf.global.toolbar.visible) {
+			this.toolbarEl = Toolbar.render(this);
+			UI.align(this.toolbarEl.node()!, conf.global.toolbar.align.horizontal, conf.global.toolbar.align.vertical);
+		}
 
 		return this;
 
