@@ -31,6 +31,14 @@
 							<option value="" selected>default</option>
 						</select>
 					</div>
+					<div class="col-sm">
+						<input type="radio" name="viewmode" id="rdoNamespaces" checked>
+						<label for="rdoNamespaces">Namespaces</label>
+						<input type="radio" name="viewmode" id="rdoAll">
+						<label for="rdoAll">All</label>
+					</div>
+				</div>
+				<div class="row">
 					<div class="col-sm" id="output"></div>
 				</div>
 			</div>
@@ -83,12 +91,11 @@
 		var graph = new kore3lab.graph.HierarchyGraph(".graph", {
 				extends: {
 					hierarchy: {
-						scale: { minWidth: 600, maxWidth: 1000 },	//min-width, max-width 
+						scale: { minWidth: 600, maxWidth: 1000 }	//min-width, max-width 
 					}
 				}
 			})
 			.on("nodeclick", (e,d)=> { $("#output").html(`<b>${d.data.name}&nbsp;&nbsp;</b>(namespace:<em>${d.data.namespace}</em>&nbsp;&nbsp;kind:<em>${d.data.kind}</em>)`) })
-
 		$("#txtConfig").text( JSON.stringify(graph.config(), null, 4));
 
 		var btnQuery = $("#btnQuery");
@@ -102,10 +109,15 @@
 			$.ajax({
 				url: url,
 				success: function(data) {
-					graph
-						.config(JSON.parse($("#txtConfig").val()))
-						.data(data)
-						.render();
+					var conf = JSON.parse($("#txtConfig").val());
+					if($("#rdoAll").is(":checked")) {
+						conf.extends.hierarchy.group.divide = false;
+						conf.extends.hierarchy.node.forEach = (cur)=> { if(cur.kind == "Pod") cur.depth = 3; }
+					} else {
+						conf.extends.hierarchy.group.divide = true;
+						conf.extends.hierarchy.node.forEach = (cur)=> { if(cur.kind == "Pod") cur.depth = 2; }
+					}
+					graph.config(conf).data(data).render();
 				},
 				error:function(request,status, error){
 					alert(`<${request.status}>\n${error}`);

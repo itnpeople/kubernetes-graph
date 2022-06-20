@@ -79,7 +79,7 @@ export namespace TopologyModel {
 	}
 
 	export enum NodeKind {
-		SERVICE = "service", POD = "pod", NAMESPACE = "namespace", NODE = "node", CLUSTER = "cluster", CONTAINER = "container",
-		USER = "user", GROUP = "group", ROLE = "role", CLUSTER_ROLE = "clusterrole", SERVICE_ACCOUNT = "serviceaccount", ROLEBINDING = "rolebinding", CLUSTER_ROLEBINDING = "clusterrolebinding", SECRET ="secret"
+		SERVICE = "Service", POD = "Pod", NAMESPACE = "Namespace", NODE = "Node", CLUSTER = "Cluster", CONTAINER = "Container",
+		USER = "User", GROUP = "Group", ROLE = "Role", CLUSTER_ROLE = "Clusterrole", SERVICE_ACCOUNT = "ServiceAccount", ROLEBINDING = "RoleBinding", CLUSTER_ROLEBINDING = "ClusterRoleBinding", SECRET ="secret"
 	}
 }
