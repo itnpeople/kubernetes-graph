@@ -43,6 +43,11 @@ module.exports = [
 			template: "./examples/hierarchy.html",
 			filename: "hierarchy.html",
 		}),
+		new HtmlWebpackPlugin({
+			chunks: ["hierarchy"],
+			template: "./examples/hierarchy.network.html",
+			filename: "hierarchy.network.html",
+		}),
 	],
 	devtool: "source-map",
 	devServer: {

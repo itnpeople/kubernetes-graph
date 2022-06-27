@@ -36,6 +36,9 @@ export class Config {
 						node : {
 							height:number
 						}
+						line : {
+							end:"none"|"arrow"
+						}
 					}
 				}
 			}
@@ -88,12 +91,13 @@ export class Config {
 						padding: {top:10, left:5, right:5, bottom:10 },		//box padding
 						tree : { 
 							spacing:15,				//트리간 간격
-							node : { height: 30 }	//노드 높이
+							node : { height: 30 },	//노드 높이
+							line: { end: "none"}	// 라인 종료 모양
 						}
 					},
 				},
 				node: {
-					forEach: undefined
+					forEach: undefined	// 노드 데이터 foreach 함수
 				}
 			},
 			topology: {

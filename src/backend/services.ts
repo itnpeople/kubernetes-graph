@@ -30,24 +30,21 @@ export class Service {
 			let nodes:Array<HierarchyModel.Node> =  new Array<HierarchyModel.Node>();
 			//deployment-nodes
 			deployments.items.forEach( (el:k8s.V1Deployment)=> {
-				nodes.push(new HierarchyModel.Node("Deployment", {name: el.metadata?.name!, namespace: el.metadata?.namespace, ownerReferences: el.metadata?.ownerReferences}))
+				nodes.push(new HierarchyModel.Node("Deployment", el.metadata))
 			});
 			//deamonsets-nodes
 			deamonsets.items.forEach( (el:k8s.V1DaemonSet)=> {
-				nodes.push(new HierarchyModel.Node("DaemonSet", {name: el.metadata?.name!, namespace: el.metadata?.namespace, ownerReferences: el.metadata?.ownerReferences}))
+				nodes.push(new HierarchyModel.Node("DaemonSet", el.metadata))
 			});
 			//replicasets-nodes
 			replicasets.items.forEach( (el:k8s.V1ReplicaSet)=> {
-				nodes.push(new HierarchyModel.Node("ReplicaSet", {name: el.metadata?.name!, namespace: el.metadata?.namespace, ownerReferences: el.metadata?.ownerReferences}))
+				nodes.push(new HierarchyModel.Node("ReplicaSet", el.metadata))
 			});
 			//pod-nodes
 			pods.items.forEach( (el:k8s.V1Pod)=> {
-				const nd = new HierarchyModel.Node("Pod", {name: el.metadata?.name!, namespace: el.metadata?.namespace, ownerReferences: el.metadata?.ownerReferences});
-				nd.depth = 2
+				const nd = new HierarchyModel.Node("Pod", el.metadata);
 				nodes.push(nd)
 			});
-
-
 
 			workloads.set(ns, nodes)
 		}

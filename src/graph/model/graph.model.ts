@@ -13,23 +13,23 @@ export namespace HierarchyModel {
 	}
 
 	export class Node {
+		uid:string
 		name:string
 		kind:string
 		namespace?:string
 		depth:number
-		ownerReference?:Node 
+		owner?:string 
+		arrow?:string
 		children:Array<Node>
 
 		constructor(kind?:string, metadata?:any) {
 			if(metadata) {
 				this.kind = kind!
-				this.name = metadata.name!
-				this.namespace = metadata.namespace
+				this.uid = metadata.uid;
+				this.name = metadata.name;
+				this.namespace = metadata.namespace;
 				if(metadata.ownerReferences) {
-					this.ownerReference = new Node()
-					this.ownerReference.kind = metadata.ownerReferences[0].kind
-					this.ownerReference.namespace = metadata.namespace
-					this.ownerReference.name = metadata.ownerReferences[0].name
+					this.owner = metadata.ownerReferences[0].uid
 				}
 			} else {
 				if(kind) this.name = kind;	//argument.lenth==1 then "name"

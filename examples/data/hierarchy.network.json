@@ -1,0 +1,7 @@
+{
+  "kore": [
+		{"name": "dash","kind": "Ingress", "namespace":"kore" },
+		{"name": "dashboard", "kind": "Service", "namespace":"kore", "arrow": "dash.k3.acornsoft.io", "owner":{"name": "dash","kind": "Ingress", "namespace":"kore"} },
+		{"name": "dashboard-8464c7b575-pn4bc", "kind": "Pod", "namespace":"kore", "owner":{"name": "dashboard","kind": "Service", "namespace":"kore"} }
+	]
+}
