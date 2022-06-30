@@ -1,7 +1,187 @@
 {
+  "default": [
+		{"uid":"ingress-dash", "name": "dash (172.16.77.83)","kind": "Ingress", "namespace":"kore" },
+		{"uid":"service-dashboard", "name": "dashboard (10.96.92.209 80)", "kind": "Service", "namespace":"kore", "arrow": "dash.k3.acornsoft.io (80)", "owner":"ingress-dash"},
+		{"uid":"dashboard-8464c7b575-pn4bc", "name": "dashboard-8464c7b575-pn4bc (10.96.92.207)", "kind": "Pod", "namespace":"kore", "owner": "service-dashboard"},
+		{"uid":"dashboard-8464c7b575-asdf2", "name": "dashboard-8464c7b575-asdf2 (10.96.92.208)", "kind": "Pod", "namespace":"kore", "owner": "service-dashboard"}
+	],
+    "kube-system": [
+        {
+            "uid": "38c8ce91-4b81-4402-b8b5-319b0f530b71",
+            "name": "kube-dns",
+            "kind": "Service",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": ""
+        },
+        {
+            "uid": "b97d1ce8-766b-44c9-9b38-94462b640d7b",
+            "name": "coredns-74ff55c5b-lcxgq",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "38c8ce91-4b81-4402-b8b5-319b0f530b71"
+        },
+        {
+            "uid": "a69aa145-a5b2-45f9-82d5-8cf0a7844f6c",
+            "name": "coredns-74ff55c5b-lqqhc",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "38c8ce91-4b81-4402-b8b5-319b0f530b71"
+        },
+        {
+            "uid": "8684c4eb-bc2b-44ca-b4da-033fd30c39ef",
+            "name": "metrics-server",
+            "kind": "Service",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": ""
+        },
+        {
+            "uid": "2c07cb8a-2490-464b-9642-8fe960d54557",
+            "name": "metrics-server-75fd6d4bdf-nxl2s",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "8684c4eb-bc2b-44ca-b4da-033fd30c39ef"
+        },
+        {
+            "uid": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9",
+            "name": "tobs-kube-prometheus-kubelet",
+            "kind": "Service",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": ""
+        },
+        {
+            "uid": "f9908e2b-2aa4-4a04-b3d8-99bb0f09243d",
+            "name": "calico-kube-controllers-97769f7c7-q22tf",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "01ef1b0b-e6f1-42fa-9906-16063187d829",
+            "name": "calico-node-8d45s",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "3edf0da3-b9a4-4a99-8bd5-9c427f5f7858",
+            "name": "calico-node-bfrsh",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "dfd0a3cc-f2d1-4db8-b622-a089a8c2aa69",
+            "name": "calico-node-qhkmj",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "b97d1ce8-766b-44c9-9b38-94462b640d7b",
+            "name": "coredns-74ff55c5b-lcxgq",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "a69aa145-a5b2-45f9-82d5-8cf0a7844f6c",
+            "name": "coredns-74ff55c5b-lqqhc",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "d92d1b95-f398-4f39-9f5c-c5b489ddc993",
+            "name": "kube-apiserver-vm-live-v2-01",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "3c7bcde7-945a-473f-8f9a-0d4b86113a33",
+            "name": "kube-controller-manager-vm-live-v2-01",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "1bfcd394-7114-4fb0-b89a-11c0e87ee93e",
+            "name": "kube-proxy-cgjdx",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "a2aa66cd-8b71-4733-99b6-ca412e8c5ce0",
+            "name": "kube-proxy-jpc6d",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "4383df76-b871-4e3e-ab81-d28c41f1c807",
+            "name": "kube-proxy-w8hkw",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "d29e4b8e-43e1-4388-9e24-afcd4956bc6d",
+            "name": "kube-scheduler-vm-live-v2-01",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "2c07cb8a-2490-464b-9642-8fe960d54557",
+            "name": "metrics-server-75fd6d4bdf-nxl2s",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        },
+        {
+            "uid": "b99e447e-7bd7-435a-9a10-3442a97a37b1",
+            "name": "nfs-pod-provisioner-67d54467df-55ml8",
+            "kind": "Pod",
+            "namespace": "kube-system",
+            "arrow": "",
+            "owner": "a521e6ad-740e-4dd7-9380-affc7cd1e2f9"
+        }
+    ],
   "kore": [
-		{"name": "dash","kind": "Ingress", "namespace":"kore" },
-		{"name": "dashboard", "kind": "Service", "namespace":"kore", "arrow": "dash.k3.acornsoft.io", "owner":{"name": "dash","kind": "Ingress", "namespace":"kore"} },
-		{"name": "dashboard-8464c7b575-pn4bc", "kind": "Pod", "namespace":"kore", "owner":{"name": "dashboard","kind": "Service", "namespace":"kore"} }
+		{"uid":"ingress-dash", "name": "dash (172.16.77.83)","kind": "Ingress", "namespace":"kore" },
+		{"uid":"service-dashboard", "name": "dashboard (10.96.92.209 80)", "kind": "Service", "namespace":"kore", "arrow": "dashdashdashdash.k3.acornsoft.io (80)", "owner":"ingress-dash"},
+		{"uid":"dashboard-8464c7b575-pn4bc", "name": "dashboard-8464c7b575-pn4bc (10.96.92.207)", "kind": "Pod", "arrow": "pods1", "namespace":"kore", "owner": "service-dashboard"},
+		{"uid":"dashboard-8464c7b575-asdf2", "name": "dashboard-8464c7b575-asdf2 (10.96.92.208)", "kind": "Pod", "arrow": "pods2", "namespace":"kore", "owner": "service-dashboard"},
+		{"uid":"dashboard-8464c7b575-asdf3", "name": "dashboard-8464c7b575-asdf2 (10.96.92.208)", "kind": "Pod", "arrow": "pods3", "namespace":"kore", "owner": "service-dashboard"},
+		{"uid":"dashboard-8464c7b575-asdf4", "name": "dashboard-8464c7b575-asdf2 (10.96.92.208)", "kind": "Pod", "arrow": "pods4", "namespace":"kore", "owner": "service-dashboard"},
+		{"uid":"ingress-dash1", "name": "dash (172.16.77.83)","kind": "Ingress", "namespace":"kore" },
+		{"uid":"service-dashboard1", "name": "dashboard (10.96.92.209 80)", "kind": "Service", "namespace":"kore", "arrow": "dash.k3.acornsoft.io (80)", "owner":"ingress-dash1"},
+		{"uid":"dashboard-8464c7b575-pn4bc1", "name": "dashboard-8464c7b575-pn4bc (10.96.92.207)", "kind": "Pod", "arrow": "pod20","namespace":"kore", "owner": "service-dashboard1"},
+		{"uid":"dashboard-8464c7b575-asdf21", "name": "dashboard-8464c7b575-asdf2 (10.96.92.208)", "kind": "Pod", "arrow": "pod21","namespace":"kore", "owner": "service-dashboard1"},
+		{"uid":"dashboard-8464c7b575-asdf22", "name": "dashboard-8464c7b575-asdf2 (10.96.92.208)", "kind": "Pod", "arrow": "pod22","namespace":"kore", "owner": "service-dashboard1"},
+		{"uid":"dashboard-8464c7b575-asdf23", "name": "dashboard-8464c7b575-asdf2 (10.96.92.208)", "kind": "Pod", "arrow": "pod23","namespace":"kore", "owner": "service-dashboard1"},
+		{"uid":"dashboard-8464c7b575-asdf24", "name": "dashboard-8464c7b575-asdf2 (10.96.92.208)", "kind": "Pod", "arrow": "pod24","namespace":"kore", "owner": "service-dashboard1"},
+		{"uid":"dashboard-8464c7b575-asdf25", "name": "dashboard-8464c7b575-asdf2 (10.96.92.208)", "kind": "Pod", "arrow": "pod25","namespace":"kore", "owner": "service-dashboard1"},
+		{"uid":"dashboard-8464c7b575-asdf26", "name": "dashboard-8464c7b575-asdf2 (10.96.92.208)", "kind": "Pod", "arrow": "pod26","namespace":"kore", "owner": "service-dashboard1"}
 	]
 }

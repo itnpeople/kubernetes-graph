@@ -6,7 +6,8 @@
 	<title>Hierarchy</title>
 	<style>
 		div.graph {width:100%; height:800px;padding:10px; border:1px solid #ccc;}
-		svg g.link text {font-size: .9em; fill:#666}
+		/*svg g.link text {font-size: .9em; fill:#666}
+		#ac_ic_arrow_line_end {fill:#666}*/
 	</style>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/fontawesome.css">
@@ -69,19 +70,6 @@
 <script>
 
 	$(function() {
-		//$.ajax({
-		//	url: "/api/clusters",
-		//	beforeSend: function() {
-		//		$("#cboCluster").empty();
-		//	},
-		//	success: function(data) {
-		//		$("#cboCluster").append($("<option value=\"\">default</option>"))
-		//		data.forEach( (c)=> {
-		//			$("#cboCluster").append($("<option value=\""+ c.name + "\">"+ c.name +"</option>"))
-		//		})
-		//	}
-		//});
-
 		// 그래프 정의
 		var graph = new kore3lab.graph.HierarchyGraph(".graph", {
 				extends: {
@@ -112,8 +100,8 @@
 				url: url,
 				success: function(data) {
 					var conf = JSON.parse($("#txtConfig").val());
-					conf.extends.hierarchy.group.divide = true;
-					//conf.extends.hierarchy.node.forEach = (cur)=> { if(cur.kind == "Pod") cur.depth = 4; if(cur.kind == "Service") cur.depth = 3; }
+					if(conf.extends.hierarchy.group.divide) conf.extends.hierarchy.node.forEach = (cur)=> { if(cur.kind == "Pod") cur.depth = 2; if(cur.kind == "Service") cur.depth = 1; }
+					else conf.extends.hierarchy.node.forEach = (cur)=> { if(cur.kind == "Pod") cur.depth = 3; if(cur.kind == "Service") cur.depth = 2; }
 					graph.config(conf).data(data).render();
 				},
 				error:function(request,status, error){
