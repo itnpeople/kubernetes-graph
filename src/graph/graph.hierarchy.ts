@@ -193,7 +193,7 @@ export class HierarchyGraph extends GraphBase {
 			.attr("class", "link");
 
 		const linkPath = linkEl.append("path")
-			.attr("class", "link")
+			.attr("class", "line")
 			.attr("d", (d:any) => {
 				// x->y, y->x (because horizontal)
 				const x1 = d.parent!.y + d.parent!.width + icoWH + (marginW*2);
@@ -213,7 +213,7 @@ export class HierarchyGraph extends GraphBase {
 			})
 			.attr("x", (d:d3.HierarchyPointNode<model.Node>,i:number,els: Array<SVGTextElement>|d3.ArrayLike<SVGTextElement>) => { 
 				if(!d.data.arrow) return 0;
-				const line = els[i].parentElement?.querySelector<SVGPathElement>("path.link");	// path.link
+				const line = els[i].parentElement?.querySelector<SVGPathElement>("path.line");	// path.line
 				if (line) {
 					const box = line.getBBox();
 					const w = UI.ellipsisText(els[i], box.width);	//ellipsis & calculate the text width
@@ -224,7 +224,7 @@ export class HierarchyGraph extends GraphBase {
 			})
 			.attr("y", (d:d3.HierarchyPointNode<model.Node>,i:number,els: Array<SVGTextElement>|d3.ArrayLike<SVGTextElement>) => {
 				if(!d.data.arrow) return 0;
-				const line = els[i].parentElement?.querySelector<SVGPathElement>("path.link");	// path.link
+				const line = els[i].parentElement?.querySelector<SVGPathElement>("path.line");	// path.line
 				if (line) {
 					const box = els[i].getBBox();				//get box
 					const boxLine = line.getBBox();				//get line-box
