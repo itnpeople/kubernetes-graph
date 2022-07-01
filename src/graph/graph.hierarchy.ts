@@ -204,34 +204,42 @@ export class HierarchyGraph extends GraphBase {
 			})
 		
 		//end arrow
-		if (conf.extends.hierarchy.group.box.tree.line.end == "arrow")  linkPath.attr("marker-start", (d:d3.HierarchyPointNode<model.Node>,i:number,els: Array<SVGPathElement>|d3.ArrayLike<SVGPathElement>)=> els[i].getBBox().width >= 30 ? "url(#ac_ic_arrow_line_end)": "");
+		if (conf.extends.hierarchy.group.box.tree.line.end == "arrow")  linkPath.attr("marker-start", (d:d3.HierarchyPointNode<model.Node>,i:number,els: Array<SVGPathElement>|d3.ArrayLike<SVGPathElement>)=> els[i].getBBox().width >= 30 ? "url(#ac_ic_link_line_end)": "");
 
 		// line description
 		linkEl.append("text")
 			.text((d:d3.HierarchyPointNode<model.Node>) => {
-				return d.data.arrow?d.data.arrow:"";
+				return d.data.line?d.data.line:"";
 			})
 			.attr("x", (d:d3.HierarchyPointNode<model.Node>,i:number,els: Array<SVGTextElement>|d3.ArrayLike<SVGTextElement>) => { 
-				if(!d.data.arrow) return 0;
+				if(!d.data.line) return 0;
 				const line = els[i].parentElement?.querySelector<SVGPathElement>("path.line");	// path.line
+				const cfg = conf.extends.hierarchy.group.box.tree.line.caption;
 				if (line) {
 					const box = line.getBBox();
-					const w = UI.ellipsisText(els[i], box.width);	//ellipsis & calculate the text width
-					return box.x + (box.width-w)/2;
+					const paddingLeft = cfg.padding.left < 0.5 ? box.width * cfg.padding.left: cfg.padding.left;		// less 0.5 then percentage
+					const paddingRight = cfg.padding.right < 0.5 ? box.width * cfg.padding.right: cfg.padding.right;	// less 0.5 then percentage
+					const w = UI.ellipsisText(els[i], box.width - (paddingLeft + paddingRight));						// ellipsis & calculate the text width
+					
+					if(cfg.align == "left") return box.x + (paddingLeft+paddingRight > w ? 0: paddingLeft);										// align left
+					else if(cfg.align == "right") return box.x + box.width  - w - (paddingLeft+paddingRight > w ? 0: paddingLeft+paddingRight);	// align right
+					else return box.x + (box.width-w)/2;																						// align center
 				} else {
 					return 0;
 				}
 			})
 			.attr("y", (d:d3.HierarchyPointNode<model.Node>,i:number,els: Array<SVGTextElement>|d3.ArrayLike<SVGTextElement>) => {
-				if(!d.data.arrow) return 0;
+				if(!d.data.line) return 0;
 				const line = els[i].parentElement?.querySelector<SVGPathElement>("path.line");	// path.line
 				if (line) {
 					const box = els[i].getBBox();				//get box
 					const boxLine = line.getBBox();				//get line-box
+					const neighbor = d.parent && d.parent.children && d.parent?.children.length > 1;	// exists neighbor
 
-					if (d.x==0) return boxLine.y - box.height - box.y - 3;			// if line is flat  (3 = line height + padding)
-					else if (d.x < 0) return boxLine.y - box.y;						// if next-node is up
-					else return boxLine.y - box.y + boxLine.height - box.height;	// if next-node is down
+					if (d.x==0 && neighbor) return boxLine.y - box.y - box.height/2;	// if line is flat - single line  (3 : line height + padding)
+					else if (!neighbor) return boxLine.y - box.height - box.y - 3;		// if multi lines  (3 : line height + padding)
+					else if (d.x < 0) return boxLine.y - box.y;							// if next-node is up
+					else return boxLine.y - box.y + boxLine.height - box.height;		// if next-node is down
 				} else {
 					return 0;
 				}
@@ -246,7 +254,7 @@ export class HierarchyGraph extends GraphBase {
 	 */
 	private static renderDefs(defsEl:d3.Selection<SVGDefsElement, any, SVGElement, any>) {
 
-		defsEl.append("marker").attr("id","ac_ic_arrow_line_end").attr("markerWidth", 7).attr("markerHeight",7).attr("refX",0).attr("refY",3.5).attr("orient","auto").html(`<polygon points="10 0, 10 7, 0 3.5" />`)
+		defsEl.append("marker").attr("id","ac_ic_link_line_end").attr("markerWidth", 7).attr("markerHeight",7).attr("refX",0).attr("refY",3.5).attr("orient","auto").html(`<polygon points="10 0, 10 7, 0 3.5" />`)
 
 		// https://github.com/kubernetes/community/tree/master/icons
 		defsEl.append("symbol").attr("id", "ac_ic_namespace")
