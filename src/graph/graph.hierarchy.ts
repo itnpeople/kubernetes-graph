@@ -183,7 +183,7 @@ export class HierarchyGraph extends GraphBase {
 				return (nodeHeight-box.height)/2 - box.y;	//set vertical-middle
 			})
 			.each( (d:any,i:number,els:SVGTextElement[]|d3.ArrayLike<SVGTextElement>) =>{
-				d.width = UI.ellipsisText(els[i], nodeWidth- minLinkWidth);	//calculate - text width
+				d.width = UI.ellipsisText(els[i],  nodeWidth - (d.children?minLinkWidth:0));	//calculate - text width
 			});
 
 		// adds the links between the nodes

@@ -170,7 +170,7 @@ export class UI {
 		const x:number = parentBounds.x;
 		const y:number = bounds.y;
 		const bottom:number = y + bounds.height + (padding?padding.top+padding.bottom:0);
-		const right:number = x + (width?width:bounds.width); //stroke-width 반영
+		const right:number = x + (width?width:bounds.width) + (border?border.width*2: 0);	//add border-width
 
 		// box (insert before g.box)
 		const background = boxWrap.insert("path","g.box")
@@ -187,8 +187,8 @@ export class UI {
 			if (border.color)  background.attr("stroke", border.color)
 			if (border.dash) background.attr("stroke-dasharray", border.dash)
 		}
-			
-		if(padding) Transform.instance(box.node()!).translate(padding.left,padding.top)
+
+		Transform.instance(box.node()!).translate(padding?padding.left+(border?border.width:0):0,padding?padding.top+(border?border.width:0):0);
 		return box
 
 	}
