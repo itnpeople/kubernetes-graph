@@ -1,7 +1,6 @@
 import * as d3		from "d3";
 import {Transform}	from "@/components/graph/utils/transform";
 import {Lang}		from "@/components/graph/utils/lang";
-import { select } from "d3";
 
 export class WH {
     height: number;
@@ -13,7 +12,7 @@ export class Bounds extends WH {
     x: number;
     y: number;
 
-	constructor(el:d3.Selection<SVGGElement, any, Element, any>|HTMLElement) {
+	constructor(el:d3.Selection<SVGGElement, any, Element, any>|HTMLElement|SVGGraphicsElement) {
 		super();
 		if (el instanceof HTMLElement) {
 			const bounds:DOMRect = el.getBoundingClientRect();	//absolute-position
@@ -23,8 +22,9 @@ export class Bounds extends WH {
 			this.width	= bounds.right - Lang.toNumber(selection.style("padding-right"),0) - this.x;
 			this.height	= bounds.bottom - Lang.toNumber(selection.style("padding-bottom"),0) - this.y;
 		} else {
-			const bounds:DOMRect = el.node()!.getBBox();	//relative-position
-			const transform:Transform = Transform.instance(el.node()!)
+			const node:SVGGraphicsElement = (el instanceof SVGGraphicsElement ? el: el.node() as SVGGraphicsElement);
+			const bounds:DOMRect = node.getBBox();	//relative-position
+			const transform:Transform = Transform.instance(node)
 			this.x	= transform.x;
 			this.y	= transform.y;
 			this.width	= bounds.width;
@@ -137,7 +137,7 @@ export class UI {
 	 * @param width 최대 너비
 	 */
 	public static ellipsisText(el:SVGTextElement, width:number): number {
-		if(el.x.baseVal.length > 0) width -= el.x.baseVal[0].value;	//x 값 빼기
+		//if(el.x.baseVal.length > 0) width -= el.x.baseVal[0].value;	//x 값 빼기
 		if(el.getComputedTextLength() > width) {
 			const text = `${el.textContent}`;
 			const chars = text.split("");

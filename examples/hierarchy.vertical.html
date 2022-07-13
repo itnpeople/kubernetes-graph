@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+	<title>Hierarchy - vertical</title>
+	<style>
+		div.graph {width:100%; height:800px;padding:10px; border:1px solid #ccc;}
+	</style>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/fontawesome.css">
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<main role="main" class="container-fluid" >
+	<h1>Hierachy vertical</h1>
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="/">Home</a></li>
+			<li class="breadcrumb-item active">Hierarchy (Vertical)</li>
+		</ol>
+	</nav>
+	<!-- OPTION -->
+	<div class="col-sm"  id="divSearch">
+		<div class="row">
+			<div class="col-sm">
+				<div class="row">
+					<div class="col-sm-1">Clusters</div>
+					<div class="col-sm-2">
+						<select id="cboCluster" class="form-control form-control-sm">
+							<option value="" selected>default</option>
+						</select>
+					</div>
+					<div class="col-sm">
+						<input type="radio" name="viewmode" id="rdoNamespaces" checked>
+						<label for="rdoNamespaces">Namespaces</label>
+						<input type="radio" name="viewmode" id="rdoAll" >
+						<label for="rdoAll">All</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm" id="output"></div>
+				</div>
+			</div>
+			<div class="col-sm-1">
+				<div class="btn-group " role="group">
+					<button type="button" id="btnQuery" class=" btn btn-sm btn-primary ">
+						<span class="spinner-border-sm" role="status" aria-hidden="true"></span>조회
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr>
+	<!-- 그래프 영역 -->
+	<div class="row">
+		<div class="col-sm-9">
+			<div class="graph"></div>
+		</div>
+		<div class="col-sm-3">
+			<textarea id="txtConfig" class="h-100 form-control form-control-sm" style="font-size: .8em;"></textarea>
+		</div>
+	</div>
+</main>
+</body>
+<script>
+	$.ajaxSetup({
+		Method: "GET",
+		contentType: "application/json; charset=utf-8",
+		dataType:"json",
+  		complete: () => { $("span.spinner-border").toggleClass("spinner-border"); }
+	});	
+</script>
+<script>
+
+	$(function() {
+		$.ajax({
+			url: "/api/clusters",
+			beforeSend: function() {
+				$("#cboCluster").empty();
+			},
+			success: function(data) {
+				$("#cboCluster").append($("<option value=\"\">default</option>"))
+				data.forEach( (c)=> {
+					$("#cboCluster").append($("<option value=\""+ c.name + "\">"+ c.name +"</option>"))
+				})
+			}
+		});
+
+		// 그래프 정의
+		var graph = new kore3lab.graph.HierarchyGraph(".graph", {
+				extends: {
+					hierarchy: {
+						type: "vertical",
+						scale: { minWidth: 600, maxWidth: 1000 }	//min-width, max-width 
+					}
+				}
+			})
+			.on("nodeclick", (e,d)=> { console.log(d); $("#output").html(`<b>${d.data.name}&nbsp;&nbsp;</b>(namespace:<em>${d.data.namespace}</em>&nbsp;&nbsp;kind:<em>${d.data.kind}</em>)`) })
+
+		$("#txtConfig").text( JSON.stringify(graph.config(), null, 4));
+
+		var btnQuery = $("#btnQuery");
+		$("#divSearch input").change(() => { btnQuery.click(); });
+		$("#divSearch select").change(() => { btnQuery.click(); });
+
+		// 조회 버튼 
+		btnQuery.click( (e) => {
+			var cluster = $("#cboCluster").val()
+			var url = cluster? `/api/clusters/${cluster}/workloads`: "/data/hierarchy.vertical.json"
+			$.ajax({
+				url: url,
+				success: function(data) {
+					var conf = JSON.parse($("#txtConfig").val());
+					if($("#rdoAll").is(":checked")) {
+						conf.extends.hierarchy.group.divide = false;
+						conf.extends.hierarchy.node.forEach = (cur)=> { if(cur.kind == "Pod") cur.depth = 3; }
+					} else {
+						conf.extends.hierarchy.group.divide = true;
+						conf.extends.hierarchy.node.forEach = (cur)=> { if(cur.kind == "Pod") cur.depth = 2; }
+					}
+					graph.config(conf).data(data).render();
+				},
+				error:function(request,status, error){
+					alert(`<${request.status}>\n${error}`);
+				}
+
+			});
+
+		});
+		btnQuery.click();
+
+	});
+
+</script>
+</html>
+
