@@ -45,6 +45,11 @@ module.exports = [
 		}),
 		new HtmlWebpackPlugin({
 			chunks: ["hierarchy"],
+			template: "./examples/hierarchy.vertical.html",
+			filename: "hierarchy.vertical.html",
+		}),
+		new HtmlWebpackPlugin({
+			chunks: ["hierarchy"],
 			template: "./examples/hierarchy.network.html",
 			filename: "hierarchy.network.html",
 		}),

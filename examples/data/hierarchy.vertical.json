@@ -1,0 +1,10 @@
+{
+  "kore": [
+		{"uid":"dashboard-6d49bb68c-g7827", "apiVersion":"v1", "name": "dashboard-6d49bb68c-g7827","kind": "Pod", "namespace":"kore" },
+		{"uid":"dashboard-6d49bb68c", "apiVersion":"apps/v1", "name": "dashboard-6d49bb68c", "kind": "ReplicaSet", "namespace":"kore", "owner":"dashboard-6d49bb68c-g7827"},
+		{"uid":"kore-board", "apiVersion":"v1", "name": "kore-board", "kind": "ServiceAccount", "namespace":"kore", "owner":"dashboard-6d49bb68c-g7827"},
+		{"uid":"dashboard", "apiVersion":"v1", "name": "dashboard-svc", "kind": "Service", "namespace":"kore", "owner":"dashboard-6d49bb68c-g7827"},
+		{"uid":"dashboard", "apiVersion":"apps/v1", "name": "dashboard", "kind": "Deployment", "namespace":"kore", "owner":"dashboard-6d49bb68c"}
+
+	]
+}
