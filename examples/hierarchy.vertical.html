@@ -25,20 +25,6 @@
 		<div class="row">
 			<div class="col-sm">
 				<div class="row">
-					<div class="col-sm-1">Clusters</div>
-					<div class="col-sm-2">
-						<select id="cboCluster" class="form-control form-control-sm">
-							<option value="" selected>default</option>
-						</select>
-					</div>
-					<div class="col-sm">
-						<input type="radio" name="viewmode" id="rdoNamespaces" checked>
-						<label for="rdoNamespaces">Namespaces</label>
-						<input type="radio" name="viewmode" id="rdoAll" >
-						<label for="rdoAll">All</label>
-					</div>
-				</div>
-				<div class="row">
 					<div class="col-sm" id="output"></div>
 				</div>
 			</div>
@@ -112,13 +98,6 @@
 				url: url,
 				success: function(data) {
 					var conf = JSON.parse($("#txtConfig").val());
-					if($("#rdoAll").is(":checked")) {
-						conf.extends.hierarchy.group.divide = false;
-						conf.extends.hierarchy.node.forEach = (cur)=> { if(cur.kind == "Pod") cur.depth = 3; }
-					} else {
-						conf.extends.hierarchy.group.divide = true;
-						conf.extends.hierarchy.node.forEach = (cur)=> { if(cur.kind == "Pod") cur.depth = 2; }
-					}
 					graph.config(conf).data(data).render();
 				},
 				error:function(request,status, error){
