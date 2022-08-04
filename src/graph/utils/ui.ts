@@ -165,9 +165,8 @@ export class UI {
 		if(render) box.call(render)
 
 		// after rendering > calcuate border(background) bounds
-		const parentBounds:DOMRect = parentEl.node()!.getBBox();
 		const bounds:DOMRect = boxWrap.node()!.getBBox();
-		const x:number = parentBounds.x;
+		const x:number = -(border?border.width: 0);
 		const y:number = bounds.y;
 		const bottom:number = y + bounds.height + (padding?padding.top+padding.bottom:0);
 		const right:number = x + (width?width:bounds.width) + (border?border.width*2: 0);	//add border-width

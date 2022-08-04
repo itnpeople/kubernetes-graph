@@ -9,6 +9,7 @@ g.outline.horizontal g.tree g.node text { font-size: 1em; }
 g.outline.horizontal g.tree g.node.click text:hover { fill: #007bff; text-decoration: underline; }
 /* vertical */
 g.outline.vertical g.tree g.node text { fill: #666; font-size:.9em; }
+g.outline.vertical g.tree g.node text.name { font-weight: bold; }
 g.outline.vertical g.tree g.node text.click:hover { fill: #007bff; text-decoration: underline; }
 g.outline.vertical g.tree g.node path.background { fill: #fff; stroke: #bbb; stroke-width: 1px; } 
 #ac_ic_arrow_end { fill:#ccc; }

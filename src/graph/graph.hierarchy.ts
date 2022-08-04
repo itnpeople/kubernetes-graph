@@ -71,24 +71,26 @@ export class HierarchyGraph extends GraphBase {
 			data[0].children = recursive(conf.data, conf.extends.hierarchy.node.forEach);
 		}
 		// serch tree depth (columns count)
-		const getDepth = (d:any, level:number) => {
-			let depth = Math.max(d.depth ? d.depth: level, level);
-			if (d.children) {
-				level++;
-				d.children.forEach((c:any) => {
-					const n = getDepth(c, level)
-					depth = Math.max(depth, n);
-				});
-			}
-			return depth;
-		}
 
-		let columns:number = 0;
-		data.forEach( (d:model.Node)=> {
-			const c = getDepth(d, -1);		// first elements is group (non-include depth)
-			columns = Math.max(columns, c);
-		});
-		columns++;
+		let maxDepth:number = 0;
+		if (conf.extends.hierarchy.type=="horizontal") {
+			const getDepth = (d:any, level:number) => {
+				let depth = Math.max(d.depth ? d.depth: level, level);
+				if (d.children) {
+					level++;
+					d.children.forEach((c:any) => {
+						const n = getDepth(c, level)
+						depth = Math.max(depth, n);
+					});
+				}
+				return depth;
+			}
+			data.forEach( (d:model.Node)=> {
+				const c = getDepth(d, -1);		// first elements is group (non-include depth)
+				maxDepth = Math.max(maxDepth, c);
+			});
+			maxDepth++;
+		}
 
 		// rendering groups
 		// svg > g.graph > g.outlineWrap > g.outline > g.group
@@ -113,7 +115,7 @@ export class HierarchyGraph extends GraphBase {
 				UI.appendBox(g, (box: d3.Selection<SVGGElement, any, SVGElement, any>)=> {
 					d.children.forEach((c:model.Node)=> {
 						let gg = box.append("g").attr("class","tree")
-							.call(conf.extends.hierarchy.type=="horizontal"?this.renderHorizontal:this.renderVertical, c, conf, treeWidth, columns)
+							.call(conf.extends.hierarchy.type=="horizontal"?this.renderHorizontal:this.renderVertical, c, conf, treeWidth, maxDepth)
 							.attr("transform", (d:any,i:number,els: Array<SVGGElement>|d3.ArrayLike<SVGGElement>)=> {
 								return `translate(0,${h-els[i].getBBox().y})`
 							});
@@ -131,6 +133,15 @@ export class HierarchyGraph extends GraphBase {
 		if(conf.global.toolbar.align.horizontal == "none") conf.global.toolbar.align.horizontal = "right";
 		if(conf.global.toolbar.align.vertical == "none") conf.global.toolbar.align.vertical = "top";
 
+		// vertical-align
+		const outline:DOMRect = this.outlineEl.node()?.getBBox()!;
+		if (bounds.height > outline.height) {
+			if(conf.extends.hierarchy.align.vertical=="middle") {
+				Transform.instance(this.outlineEl.node()!).translateY((bounds.height - outline.height)/2);
+			} else if(conf.extends.hierarchy.align.vertical=="bottom") {
+				Transform.instance(this.outlineEl.node()!).translateY(bounds.height - outline.height);
+			}
+		}
 	}
 
 
@@ -139,10 +150,28 @@ export class HierarchyGraph extends GraphBase {
 	*/
 	private renderVertical(parentEl:d3Select.Selection<SVGGElement,any,SVGElement,any>, data:model.Node, conf:Config, width:number, columns:number) {
 
-		const nodeHeight:number = 120;	//conf.extends.hierarchy.group.box.tree.node.height;	//default:30
+		//calcuate max-columns
+		columns = 0
+		const getMaxCols = (d:any) => {
+			let cols = d.children?d.children.length:0;
+			if (d.children && d.children.length > 0) {
+				for(let i=0; i < d.children.length; i++) {
+					cols = Math.max(cols, getMaxCols(d.children[i]));
+				}
+			}
+			return cols;
+		}
+		for(let n=0; n < data.children.length; n++) {
+			columns = Math.max(columns, getMaxCols(data));
+		}
+
+		// contraints
+		const nodeHeight:number = conf.extends.hierarchy.group.box.tree.node.height + 50;	//default:30
 		const nodeWidth:number = width/columns;
 		const nodePadding = conf.extends.hierarchy.group.box.tree.node.padding;
+		const ellipsisWidth = nodeWidth - (nodePadding.left + nodePadding.right);	//text max-width(ellipsis text)
 
+		// layouts
 		const layoaut = d3.tree().nodeSize([nodeWidth, nodeHeight]);	//w, h
 		let d:d3.HierarchyNode<model.Node> = d3.hierarchy(data, (d:any) => d.children);	//  assigns the data to a hierarchy using parent-child relationships
 		let nodes:d3.HierarchyPointNode<model.Node> = <d3.HierarchyPointNode<model.Node>>layoaut(d) // maps the node data to the tree layout
@@ -152,7 +181,6 @@ export class HierarchyGraph extends GraphBase {
 		const nodeEl:d3.Selection<SVGGElement, any, SVGElement, any> = wrapEl.selectAll("g.node")
 			.data(nodes.descendants()).enter()
 			.append("g").attr("class", "node");
-				
 
 		// g.wrap > g.node > text (line-1)
 		const nameEl:d3.Selection<SVGTextElement, any, SVGElement, any> = nodeEl.append("text")
@@ -163,7 +191,7 @@ export class HierarchyGraph extends GraphBase {
 				return d.y + els[i].getBBox().height;
 			})
 			.each( (d:d3.HierarchyPointNode<model.Node>,i:number,els:SVGTextElement[]|d3.ArrayLike<SVGTextElement>) =>{
-				UI.ellipsisText(els[i],  nodeWidth);
+				UI.ellipsisText(els[i],  ellipsisWidth);
 			})
 
 		// on nodeclick
@@ -178,16 +206,16 @@ export class HierarchyGraph extends GraphBase {
 				return d.y + els[i].getBBox().height * 2;
 			})
 			.each( (d:d3.HierarchyPointNode<model.Node>,i:number,els:SVGTextElement[]|d3.ArrayLike<SVGTextElement>) =>{
-				UI.ellipsisText(els[i],  nodeWidth);
+				UI.ellipsisText(els[i],  ellipsisWidth);
 			});
 
-			// align-center
-			nodeEl.each( (d:any,i:number,els:SVGGElement[]|d3.ArrayLike<SVGGElement>) =>{
-				const rect:DOMRect = els[i].getBBox();
-				d.y = rect.y;
-				d.height = rect.height;
-				Transform.instance(els[i]).translateX( (nodeWidth -rect.width)/2 );
-			});
+		// align-center
+		nodeEl.each( (d:any,i:number,els:SVGGElement[]|d3.ArrayLike<SVGGElement>) =>{
+			const rect:DOMRect = els[i].getBBox();
+			d.y = rect.y;
+			d.height = rect.height;
+			Transform.instance(els[i]).translateX( (nodeWidth -rect.width)/2 );
+		});
 
 
 		// g.wrap > g.node > path.background
